@@ -8,22 +8,34 @@
 import UIKit
 
 class PostViewController: UIViewController {
+	var postTitle: String?
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
+	override func viewDidLoad() {
+		super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
-    }
-    
+		view.backgroundColor = .systemBrown
+		title = postTitle
 
-    /*
-    // MARK: - Navigation
+		navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "info.circle"), style: .plain, target: self, action: #selector (showInfo))
+	}
 
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
+
+	@objc func showInfo() {
+		let infoVC = InfoViewController()
+		infoVC.view.backgroundColor = .systemBackground
+		infoVC.modalPresentationStyle = .pageSheet
+		infoVC.modalTransitionStyle = .coverVertical
+		present(infoVC, animated: true, completion: nil)
+	}
+
+	/*
+	// MARK: - Navigation
+
+	// In a storyboard-based application, you will often want to do a little preparation before navigation
+	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+		// Get the new view controller using segue.destination.
+		// Pass the selected object to the new view controller.
+	}
+	*/
 
 }
