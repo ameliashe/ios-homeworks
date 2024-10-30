@@ -12,9 +12,13 @@ class InfoViewController: UIViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 
-		let alertButton = UIButton(type: .system)
-		alertButton.setTitle("Вызвать Алерт", for: .normal)
-		alertButton.addTarget(self, action: #selector(alertButtonTapped), for: .touchUpInside)
+		let alertButton: UIButton = {
+			let button = UIButton(type: .system)
+			button.setTitle("Вызвать Алерт", for: .normal)
+			button.addTarget(self, action: #selector(alertButtonTapped), for: .touchUpInside)
+
+			return button
+		}()
 
 		view.addSubview(alertButton)
 
@@ -26,13 +30,18 @@ class InfoViewController: UIViewController {
 	}
 
 	@objc func alertButtonTapped() {
-		let alert = UIAlertController(title: "Внимание!", message: "Это Алерт", preferredStyle: .alert)
-		alert.addAction(UIAlertAction(title: "Ок", style: .default) { _ in
-			print("Ok")
-		})
-		alert.addAction(UIAlertAction(title: "Отмена", style: .cancel) { _ in
-			print("Cancel")
-		})
+		let alert: UIAlertController = {
+			let alert = UIAlertController(title: "Внимание!", message: "Это Алерт", preferredStyle: .alert)
+			alert.addAction(UIAlertAction(title: "Ок", style: .default) { _ in
+				print("Ok")
+			})
+			alert.addAction(UIAlertAction(title: "Отмена", style: .cancel) { _ in
+				print("Cancel")
+			})
+			
+			return alert
+		}()
+
 		present(alert, animated: true)
 	}
 

@@ -16,10 +16,14 @@ class FeedViewController: UIViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 
-		let postButton = UIButton(type: .system)
-		postButton.setTitle("Показать пост", for: .normal)
-		postButton.addTarget(self, action: #selector(showPost), for: .touchUpInside)
-		postButton.translatesAutoresizingMaskIntoConstraints = false
+		let postButton: UIButton = {
+			let button = UIButton(type: .system)
+			button.setTitle("Показать пост", for: .normal)
+			button.addTarget(self, action: #selector(showPost), for: .touchUpInside)
+			button.translatesAutoresizingMaskIntoConstraints = false
+
+			return button
+		}()
 
 		view.addSubview(postButton)
 

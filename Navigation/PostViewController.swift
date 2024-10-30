@@ -21,11 +21,15 @@ class PostViewController: UIViewController {
 
 
 	@objc func showInfo() {
-		let infoVC = InfoViewController()
-		infoVC.view.backgroundColor = .systemBackground
-		infoVC.modalPresentationStyle = .pageSheet
-		infoVC.modalTransitionStyle = .coverVertical
-		present(infoVC, animated: true, completion: nil)
+		let infoViewController: InfoViewController = {
+			let infoVC = InfoViewController()
+			infoVC.view.backgroundColor = .systemBackground
+			infoVC.modalPresentationStyle = .pageSheet
+			infoVC.modalTransitionStyle = .coverVertical
+			return infoVC
+		}()
+
+		present(infoViewController, animated: true, completion: nil)
 	}
 
 	/*
