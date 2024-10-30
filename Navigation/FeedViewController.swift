@@ -18,7 +18,7 @@ class FeedViewController: UIViewController {
 
 		let postButton: UIButton = {
 			let button = UIButton(type: .system)
-			button.setTitle("Показать пост", for: .normal)
+			button.setTitle("Show post", for: .normal)
 			button.addTarget(self, action: #selector(showPost), for: .touchUpInside)
 			button.translatesAutoresizingMaskIntoConstraints = false
 
@@ -33,7 +33,7 @@ class FeedViewController: UIViewController {
 		])
 	}
 
-	var post = Post(title: "Это пост!")
+	var post = Post(title: "This is a post!")
 
 	@objc func showPost() {
 		let postVC = PostViewController()

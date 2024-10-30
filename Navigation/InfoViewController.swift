@@ -14,7 +14,7 @@ class InfoViewController: UIViewController {
 
 		let alertButton: UIButton = {
 			let button = UIButton(type: .system)
-			button.setTitle("Вызвать Алерт", for: .normal)
+			button.setTitle("Show Alert", for: .normal)
 			button.addTarget(self, action: #selector(alertButtonTapped), for: .touchUpInside)
 
 			return button
@@ -31,11 +31,11 @@ class InfoViewController: UIViewController {
 
 	@objc func alertButtonTapped() {
 		let alert: UIAlertController = {
-			let alert = UIAlertController(title: "Внимание!", message: "Это Алерт", preferredStyle: .alert)
-			alert.addAction(UIAlertAction(title: "Ок", style: .default) { _ in
+			let alert = UIAlertController(title: "Warning!", message: "This is Alert", preferredStyle: .alert)
+			alert.addAction(UIAlertAction(title: "Ok", style: .default) { _ in
 				print("Ok")
 			})
-			alert.addAction(UIAlertAction(title: "Отмена", style: .cancel) { _ in
+			alert.addAction(UIAlertAction(title: "Cancel", style: .cancel) { _ in
 				print("Cancel")
 			})
 			
