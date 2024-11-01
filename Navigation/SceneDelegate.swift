@@ -31,10 +31,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 		let tabBarController = UITabBarController()
 		tabBarController.viewControllers = controllers
 
-		feedNavigationController.tabBarItem = UITabBarItem(title: "Лента", image: UIImage(systemName: "list.bullet.rectangle"), tag: 0)
-		profileNavigationController.tabBarItem = UITabBarItem(title: "Профиль", image: UIImage(systemName: "person"), tag: 1)
+		feedNavigationController.tabBarItem = UITabBarItem(title: "Feed", image: UIImage(systemName: "list.bullet.rectangle"), tag: 0)
+		profileNavigationController.tabBarItem = UITabBarItem(title: "Profile", image: UIImage(systemName: "person"), tag: 1)
 
 		tabBarController.selectedIndex = 0
+		tabBarController.tabBar.isTranslucent = false
 
 		window.rootViewController = tabBarController
 		window.makeKeyAndVisible()
