@@ -12,14 +12,16 @@ class ProfileViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+		setupView()
+		setupProfileHeaderView()
+		setupBottomButton()
+    }
+
+	func setupView() {
 		view.backgroundColor = .lightGray
 		title = "Profile"
 		navigationController?.navigationBar.isTranslucent = false
-
-		setupProfileHeaderView()
-		setupBottomButton()
-
-    }
+	}
 
 	let profileHeaderView = ProfileHeaderView()
 
