@@ -16,21 +16,28 @@ class FeedViewController: UIViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 
-		let postButton: UIButton = {
-			let button = UIButton(type: .system)
-			button.setTitle("Show post", for: .normal)
-			button.addTarget(self, action: #selector(showPost), for: .touchUpInside)
-			button.translatesAutoresizingMaskIntoConstraints = false
+		view.addSubview(postButtonStackView)
+		configureButtons()
+		configureStackView()
+	}
 
-			return button
-		}()
+	let postButton1: UIButton = {
+		let button = UIButton(type: .system)
+		button.setTitle("Show post", for: .normal)
 
-		view.addSubview(postButton)
+		return button
+	}()
 
-		NSLayoutConstraint.activate([
-			postButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-			postButton.centerYAnchor.constraint(equalTo: view.centerYAnchor)
-		])
+	let postButton2: UIButton = {
+		let button = UIButton(type: .system)
+		button.setTitle("Show post", for: .normal)
+
+		return button
+	}()
+
+	func configureButtons() {
+		postButton1.addTarget(self, action: #selector(showPost), for: .touchUpInside)
+		postButton2.addTarget(self, action: #selector(showPost), for: .touchUpInside)
 	}
 
 	var post = Post(title: "This is a post!")
@@ -41,14 +48,25 @@ class FeedViewController: UIViewController {
 		navigationController?.pushViewController(postVC, animated: true)
 	}
 
-	/*
-	// MARK: - Navigation
+	lazy var postButtonStackView: UIStackView = {
+		let stackView = UIStackView()
 
-	// In a storyboard-based application, you will often want to do a little preparation before navigation
-	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-		// Get the new view controller using segue.destination.
-		// Pass the selected object to the new view controller.
+		stackView.translatesAutoresizingMaskIntoConstraints = false
+		stackView.clipsToBounds = true
+		stackView.axis = .vertical
+		stackView.distribution = .fillEqually
+		stackView.spacing = 10
+
+		stackView.addArrangedSubview(postButton1)
+		stackView.addArrangedSubview(postButton2)
+
+		return stackView
+	}()
+
+	func configureStackView() {
+		NSLayoutConstraint.activate([
+			postButtonStackView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+			postButtonStackView.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+		])
 	}
-	*/
-
 }
