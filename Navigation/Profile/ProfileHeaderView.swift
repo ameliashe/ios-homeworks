@@ -9,7 +9,7 @@ import UIKit
 
 class ProfileHeaderView: UIView {
 
-    let profileImageView: UIImageView = {
+    let avatarImageView: UIImageView = {
 		let imageView = UIImageView()
 		imageView.image = UIImage(named: "cat")
 		imageView.layer.cornerRadius = 50
@@ -22,7 +22,7 @@ class ProfileHeaderView: UIView {
 		return imageView
 	}()
 
-	let nameLabel: UILabel = {
+	let fullNameLabel: UILabel = {
 		let label = UILabel()
 		label.text = "Рыжуля"
 		label.font = .systemFont(ofSize: .init(18), weight: .bold)
@@ -57,7 +57,7 @@ class ProfileHeaderView: UIView {
 		return button
 	}()
 
-	let changeStatusField: TextField = {
+	let statusTextField: TextField = {
 		let field = TextField()
 
 		field.placeholder = "Change status"
@@ -75,13 +75,13 @@ class ProfileHeaderView: UIView {
 
 
 	private func setupView() {
-		addSubview(profileImageView)
-		addSubview(nameLabel)
+		addSubview(avatarImageView)
+		addSubview(fullNameLabel)
 		addSubview(statusLabel)
 		addSubview(setStatusButton)
-		addSubview(changeStatusField)
+		addSubview(statusTextField)
 
-		changeStatusField.addTarget(self, action: #selector(statusTextChanged(_:)), for: .editingChanged)
+		statusTextField.addTarget(self, action: #selector(statusTextChanged(_:)), for: .editingChanged)
 		setStatusButton.addTarget(self, action: #selector(setStatusTapped), for: .touchUpInside)
 
 		setupConstraints()
@@ -101,25 +101,25 @@ class ProfileHeaderView: UIView {
 	private func setupConstraints() {
 
 		NSLayoutConstraint.activate([
-			profileImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
-			profileImageView.topAnchor.constraint(equalTo: topAnchor, constant: 16),
-			profileImageView.widthAnchor.constraint(equalToConstant: 100),
-			profileImageView.heightAnchor.constraint(equalToConstant: 100),
+			avatarImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
+			avatarImageView.topAnchor.constraint(equalTo: topAnchor, constant: 16),
+			avatarImageView.widthAnchor.constraint(equalToConstant: 100),
+			avatarImageView.heightAnchor.constraint(equalToConstant: 100),
 
-			nameLabel.topAnchor.constraint(equalTo: profileImageView.topAnchor, constant: 11),
-			nameLabel.leadingAnchor.constraint(equalTo: profileImageView.trailingAnchor, constant: 16),
-			nameLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
+			fullNameLabel.topAnchor.constraint(equalTo: avatarImageView.topAnchor, constant: 11),
+			fullNameLabel.leadingAnchor.constraint(equalTo: avatarImageView.trailingAnchor, constant: 16),
+			fullNameLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
 
-			statusLabel.bottomAnchor.constraint(equalTo: profileImageView.bottomAnchor, constant: -18),
-			statusLabel.leadingAnchor.constraint(equalTo: nameLabel.leadingAnchor),
-			statusLabel.trailingAnchor.constraint(equalTo: nameLabel.trailingAnchor),
+			statusLabel.bottomAnchor.constraint(equalTo: avatarImageView.bottomAnchor, constant: -18),
+			statusLabel.leadingAnchor.constraint(equalTo: fullNameLabel.leadingAnchor),
+			statusLabel.trailingAnchor.constraint(equalTo: fullNameLabel.trailingAnchor),
 
-			changeStatusField.topAnchor.constraint(equalTo: statusLabel.bottomAnchor, constant: 8),
-			changeStatusField.leadingAnchor.constraint(equalTo: nameLabel.leadingAnchor),
-			changeStatusField.trailingAnchor.constraint(equalTo: nameLabel.trailingAnchor),
-			changeStatusField.heightAnchor.constraint(equalToConstant: 40),
+			statusTextField.topAnchor.constraint(equalTo: statusLabel.bottomAnchor, constant: 8),
+			statusTextField.leadingAnchor.constraint(equalTo: fullNameLabel.leadingAnchor),
+			statusTextField.trailingAnchor.constraint(equalTo: fullNameLabel.trailingAnchor),
+			statusTextField.heightAnchor.constraint(equalToConstant: 40),
 
-			setStatusButton.topAnchor.constraint(equalTo: changeStatusField.bottomAnchor, constant: 8),
+			setStatusButton.topAnchor.constraint(equalTo: statusTextField.bottomAnchor, constant: 8),
 			setStatusButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
 			setStatusButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
 			setStatusButton.heightAnchor.constraint(equalToConstant: 50)
