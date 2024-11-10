@@ -80,22 +80,26 @@ class ProfileHeaderView: UIView {
 		addSubview(statusLabel)
 		addSubview(setStatusButton)
 		addSubview(statusTextField)
+	}
 
+	func configureStatusChange() {
 		statusTextField.addTarget(self, action: #selector(statusTextChanged(_:)), for: .editingChanged)
 		setStatusButton.addTarget(self, action: #selector(setStatusTapped), for: .touchUpInside)
-
-		setupConstraints()
 	}
 
 
 	override init(frame: CGRect) {
-		 super.init(frame: frame)
-		 setupView()
+		super.init(frame: frame)
+		setupView()
+		setupConstraints()
+		configureStatusChange()
 	 }
 
 	 required init?(coder: NSCoder) {
 		 super.init(coder: coder)
 		 setupView()
+		 setupConstraints()
+		 configureStatusChange()
 	 }
 
 	private func setupConstraints() {

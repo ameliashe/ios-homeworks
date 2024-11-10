@@ -21,10 +21,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 		let window = UIWindow(windowScene: scene)
 
 		let feedViewController = FeedViewController()
-		let profileViewController = ProfileViewController()
+		let logInViewController = LogInViewController()
 
 		let feedNavigationController = UINavigationController(rootViewController: feedViewController)
-		let profileNavigationController = UINavigationController(rootViewController: profileViewController)
+		let profileNavigationController = UINavigationController(rootViewController: logInViewController)
 
 		let controllers = [feedNavigationController, profileNavigationController]
 
