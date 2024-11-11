@@ -13,7 +13,7 @@ class ProfileViewController: UIViewController {
         super.viewDidLoad()
 
 		setupView()
-		setupProfileHeaderView()
+		addSubviews()
 		setupConstraints()
     }
 
@@ -26,7 +26,7 @@ class ProfileViewController: UIViewController {
 	let profileHeaderView = ProfileHeaderView()
 
 
-	func setupProfileHeaderView() {
+	func addSubviews() {
 		view.addSubview(profileHeaderView)
 		view.addSubview(bottomButton)
 	}

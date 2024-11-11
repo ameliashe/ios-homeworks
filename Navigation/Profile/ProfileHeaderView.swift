@@ -97,9 +97,6 @@ class ProfileHeaderView: UIView {
 
 	 required init?(coder: NSCoder) {
 		 super.init(coder: coder)
-		 setupView()
-		 setupConstraints()
-		 configureStatusChange()
 	 }
 
 	private func setupConstraints() {
