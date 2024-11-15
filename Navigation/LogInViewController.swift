@@ -9,57 +9,6 @@ import UIKit
 
 class LogInViewController: UIViewController {
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-		viewSetup()
-		layoutConstraintsSetup()
-		configureLoginButton()
-    }
-
-	override func viewWillAppear(_ animated: Bool) {
-		super.viewWillAppear(animated)
-		
-		setupKeyboardObservers()
-	}
-
-	override func viewWillDisappear(_ animated: Bool) {
-		super.viewWillDisappear(animated)
-		
-		removeKeyboardObservers()
-	}
-
-	func viewSetup() {
-		navigationController?.navigationBar.isHidden = true
-		view.backgroundColor = .white
-
-		contentView.addSubview(logoImageView)
-		contentView.addSubview(credentialsStackView)
-		contentView.addSubview(loginButton)
-
-		scrollView.addSubview(contentView)
-		view.addSubview(scrollView)
-	}
-
-	let logoImageView: UIImageView = {
-		let imageView = UIImageView()
-		imageView.image = UIImage(named: "logo-2")
-		imageView.contentMode = .scaleAspectFit
-		imageView.translatesAutoresizingMaskIntoConstraints = false
-		return imageView
-	}()
-
-	let loginButton: UIButton = {
-		let button = UIButton()
-		button.setTitle("Log In", for: .normal)
-		button.setTitleColor(.white, for: .normal)
-		button.setBackgroundImage(UIImage(named: "blue_pixel"), for: .normal)
-		button.layer.masksToBounds = true
-		button.layer.cornerRadius = 10
-		button.translatesAutoresizingMaskIntoConstraints = false
-		return button
-	}()
-
 	lazy var credentialsStackView: UIStackView = {
 		let stackView = UIStackView(arrangedSubviews: [usernameTextField, separatorView, passwordTextField])
 		stackView.axis = .vertical
@@ -119,6 +68,57 @@ class LogInViewController: UIViewController {
 		   view.translatesAutoresizingMaskIntoConstraints = false
 		   return view
 	   }()
+
+	let logoImageView: UIImageView = {
+		let imageView = UIImageView()
+		imageView.image = UIImage(named: "logo-2")
+		imageView.contentMode = .scaleAspectFit
+		imageView.translatesAutoresizingMaskIntoConstraints = false
+		return imageView
+	}()
+
+	let loginButton: UIButton = {
+		let button = UIButton()
+		button.setTitle("Log In", for: .normal)
+		button.setTitleColor(.white, for: .normal)
+		button.setBackgroundImage(UIImage(named: "blue_pixel"), for: .normal)
+		button.layer.masksToBounds = true
+		button.layer.cornerRadius = 10
+		button.translatesAutoresizingMaskIntoConstraints = false
+		return button
+	}()
+
+	override func viewDidLoad() {
+		super.viewDidLoad()
+
+		viewSetup()
+		layoutConstraintsSetup()
+		configureLoginButton()
+	}
+
+	override func viewWillAppear(_ animated: Bool) {
+		super.viewWillAppear(animated)
+
+		setupKeyboardObservers()
+	}
+
+	override func viewWillDisappear(_ animated: Bool) {
+		super.viewWillDisappear(animated)
+
+		removeKeyboardObservers()
+	}
+
+	func viewSetup() {
+		navigationController?.navigationBar.isHidden = true
+		view.backgroundColor = .white
+
+		contentView.addSubview(logoImageView)
+		contentView.addSubview(credentialsStackView)
+		contentView.addSubview(loginButton)
+
+		scrollView.addSubview(contentView)
+		view.addSubview(scrollView)
+	}
 
 	func layoutConstraintsSetup() {
 		NSLayoutConstraint.activate([

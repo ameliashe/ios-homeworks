@@ -9,47 +9,63 @@ import UIKit
 
 class ProfileViewController: UIViewController {
 
-	struct Post {
-		let author: String
-		let description: String
-		let image: String
-		let likes: Int
-		let views: Int
+	private enum HeaderFooterReuseID: String {
+		case base = "ProfileHeaderView_ID"
+	}
+
+	private enum CellReuseID: String {
+		case base = "ProfilePostCell_ID"
 	}
 
 	let posts: [Post] = [
 		Post(
-			author: "Анна",
-			description: "Невероятные виды на закат 🌅",
-			image: "sunset_image",
+			author: "Анна Янкова",
+			description: "Невероятные виды на закат. Вчера была отличная погода, и я сделала несколько снимков у озера.",
+			image: "sunset",
 			likes: 120,
 			views: 430
 		),
 		Post(
-			author: "Борис",
-			description: "Люблю готовить! Сегодняшний эксперимент удался 👨‍🍳",
-			image: "food_image",
+			author: "Борис Юрьев",
+			description: "Люблю готовить! Сегодняшний эксперимент удался: попробовал новый рецепт пасты с морепродуктами. Все, кто пробовал, остались в восторге – обязательно буду готовить снова!",
+			image: "food",
 			likes: 95,
 			views: 210
 		),
 		Post(
-			author: "Виктория",
-			description: "Путешествия - это всегда приключение! Следующий пункт - Альпы 🏔️",
-			image: "mountain_image",
+			author: "Виктория Этюхова",
+			description: "Путешествия - это всегда приключение!",
+			image: "mountain",
 			likes: 145,
 			views: 500
 		),
 		Post(
-			author: "Геннадий",
-			description: "Пробежка по городу - лучший способ начать день 🏃‍♂️",
-			image: "city_run_image",
+			author: "Геннадий Щербаков",
+			description: "Прогулка в лесу – лучшее лекарство от суеты. Сегодня обнаружил уютное место у реки, где можно посидеть в тишине и насладиться природой. Такие моменты помогают перезагрузиться.",
+			image: "forest",
+			likes: 90,
+			views: 250
+		),
+		Post(
+			author: "Диана Шастун",
+			description: "Сегодня я посетила выставку современного искусства и вдохновилась на создание своего арт-проекта. Мне очень понравилось сочетание ярких цветов и минимализма в работах художников.",
+			image: "art",
+			likes: 60,
+			views: 180
+		),
+		Post(
+			author: "Евгений Чарков",
+			description: "Вчера я попробовал новый сорт чая – улун с легкими цветочными нотками. Он не только обладает приятным вкусом, но и помогает расслабиться после долгого дня. Определенно, теперь это мой фаворит на вечерние чаепития!",
+			image: "tea",
 			likes: 75,
 			views: 300
 		)
 	]
 
+	let profileHeaderView = ProfileHeaderView()
+
 	lazy private var postsTableView: UITableView = {
-		let tableView = UITableView(frame: .zero, style: .plain)
+		let tableView = UITableView(frame: .zero, style: .grouped)
 		tableView.translatesAutoresizingMaskIntoConstraints = false
 
 		return tableView
@@ -58,30 +74,34 @@ class ProfileViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+		addSubviews()
 		setupView()
-		
+		setupConstraints()
+		setupTableView()
+
     }
 
-	func setupView() {
-		view.backgroundColor = .lightGray
+	func addSubviews() {
+		view.addSubview(postsTableView)
 	}
 
-	let profileHeaderView = ProfileHeaderView()
+	func setupView() {
+		view.backgroundColor = .systemGray6
+	}
 
 	func setupTableView() {
+		postsTableView.rowHeight = UITableView.automaticDimension
+		postsTableView.estimatedRowHeight = 200
+		postsTableView.tableFooterView = UIView()
+		postsTableView.contentInsetAdjustmentBehavior = .never
+
+		postsTableView.register(ProfileHeaderView.self, forHeaderFooterViewReuseIdentifier: HeaderFooterReuseID.base.rawValue)
+
+		postsTableView.register(CustomPostCell.self, forCellReuseIdentifier: CellReuseID.base.rawValue)
+
 		postsTableView.delegate = self
 		postsTableView.dataSource = self
-		postsTableView.register(postCell.self, forCellReuseIdentifier: postCell.reuseIdentifier)
-		postsTableView.rowHeight = 100
 	}
-
-//	let postCell: UITableViewCell = {
-//		let cell = UITableViewCell()
-//		cell.translatesAutoresizingMaskIntoConstraints = false
-//		
-//		return cell
-//	}()
-
 
 	func setupConstraints() {
 		NSLayoutConstraint.activate([
@@ -94,12 +114,27 @@ class ProfileViewController: UIViewController {
 }
 
 extension ProfileViewController: UITableViewDataSource, UITableViewDelegate {
+
+	func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+		guard let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: HeaderFooterReuseID.base.rawValue) as? ProfileHeaderView else { return nil }
+		headerView.contentView.backgroundColor = .systemGray6
+		return headerView
+	}
+
 	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		<#code#>
+		posts.count
 	}
 	
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-		<#code#>
+		guard let cell = tableView.dequeueReusableCell(withIdentifier: CellReuseID.base.rawValue, for: indexPath) as? CustomPostCell else {
+			fatalError("could not dequeue cell")
+		}
+		cell.update(posts[indexPath.row])
+		return cell
 	}
-	
+
+	func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+		return 220
+	}
+
 }

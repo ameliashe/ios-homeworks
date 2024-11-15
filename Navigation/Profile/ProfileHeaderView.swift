@@ -7,9 +7,9 @@
 
 import UIKit
 
-class ProfileHeaderView: UIView {
+class ProfileHeaderView: UITableViewHeaderFooterView {
 
-    let avatarImageView: UIImageView = {
+	let avatarImageView: UIImageView = {
 		let imageView = UIImageView()
 		imageView.image = UIImage(named: "cat")
 		imageView.layer.cornerRadius = 50
@@ -28,7 +28,7 @@ class ProfileHeaderView: UIView {
 		label.font = .systemFont(ofSize: .init(18), weight: .bold)
 		label.textColor = .black
 		label.translatesAutoresizingMaskIntoConstraints = false
-		
+
 		return label
 	}()
 
@@ -38,7 +38,7 @@ class ProfileHeaderView: UIView {
 		label.font = .systemFont(ofSize: .init(14), weight: .light)
 		label.textColor = .gray
 		label.translatesAutoresizingMaskIntoConstraints = false
-		
+
 		return label
 	}()
 
@@ -53,13 +53,11 @@ class ProfileHeaderView: UIView {
 		button.layer.shadowRadius = 4
 		button.layer.shadowOpacity = 0.7
 		button.translatesAutoresizingMaskIntoConstraints = false
-
 		return button
 	}()
 
 	let statusTextField: TextField = {
 		let field = TextField()
-
 		field.placeholder = "Change status"
 		field.backgroundColor = .white
 		field.font = .systemFont(ofSize: .init(15), weight: .regular)
@@ -69,12 +67,22 @@ class ProfileHeaderView: UIView {
 		field.layer.borderColor = UIColor.black.cgColor
 		field.isUserInteractionEnabled = true
 		field.translatesAutoresizingMaskIntoConstraints = false
-
 		return field
 	}()
 
+	override init(reuseIdentifier: String?) {
+		super.init(reuseIdentifier: reuseIdentifier)
 
-	private func setupView() {
+		addSubviews()
+		setupConstraints()
+		configureStatusChange()
+	}
+
+	 required init?(coder: NSCoder) {
+		 super.init(coder: coder)
+	 }
+
+	private func addSubviews() {
 		addSubview(avatarImageView)
 		addSubview(fullNameLabel)
 		addSubview(statusLabel)
@@ -86,21 +94,6 @@ class ProfileHeaderView: UIView {
 		statusTextField.addTarget(self, action: #selector(statusTextChanged(_:)), for: .editingChanged)
 		setStatusButton.addTarget(self, action: #selector(setStatusTapped), for: .touchUpInside)
 	}
-
-
-	override init(frame: CGRect) {
-		super.init(frame: frame)
-		setupView()
-		setupConstraints()
-		configureStatusChange()
-	 }
-
-	 required init?(coder: NSCoder) {
-		 super.init(coder: coder)
-		 setupView()
-		 setupConstraints()
-		 configureStatusChange()
-	 }
 
 	private func setupConstraints() {
 
@@ -142,7 +135,6 @@ class ProfileHeaderView: UIView {
 		print("Button pressed. Setting status to: \(statusText)")
 			statusLabel.text = statusText
 		}
-
 }
 
 class TextField: UITextField {
