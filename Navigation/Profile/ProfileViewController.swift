@@ -13,8 +13,8 @@ class ProfileViewController: UIViewController {
         super.viewDidLoad()
 
 		setupView()
-		setupProfileHeaderView()
-		setupBottomButton()
+		addSubviews()
+		setupConstraints()
     }
 
 	func setupView() {
@@ -26,15 +26,26 @@ class ProfileViewController: UIViewController {
 	let profileHeaderView = ProfileHeaderView()
 
 
-	func setupProfileHeaderView() {
+	func addSubviews() {
 		view.addSubview(profileHeaderView)
+		view.addSubview(bottomButton)
+	}
+
+	func setupConstraints() {
 		profileHeaderView.translatesAutoresizingMaskIntoConstraints = false
+		bottomButton.translatesAutoresizingMaskIntoConstraints = false
+
 		NSLayoutConstraint.activate([
 			profileHeaderView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
 			profileHeaderView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
 			profileHeaderView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-			profileHeaderView.heightAnchor.constraint(equalToConstant: 220)
+			profileHeaderView.heightAnchor.constraint(equalToConstant: 220),
+
+			bottomButton.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+			bottomButton.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+			bottomButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
 		])
+
 	}
 
 	let bottomButton: UIButton = {
@@ -42,16 +53,6 @@ class ProfileViewController: UIViewController {
 		button.setTitle("Кнопка внизу", for: .normal)
 		return button
 	}()
-
-	func setupBottomButton() {
-		view.addSubview(bottomButton)
-		bottomButton.translatesAutoresizingMaskIntoConstraints = false
-		NSLayoutConstraint.activate([
-			bottomButton.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-			bottomButton.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-			bottomButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
-		])
-	}
 
 	override func viewWillLayoutSubviews() {
 		super.viewWillLayoutSubviews()
