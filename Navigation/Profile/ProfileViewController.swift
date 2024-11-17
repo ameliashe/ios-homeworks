@@ -15,6 +15,7 @@ class ProfileViewController: UIViewController {
 
 	private enum CellReuseID: String {
 		case base = "ProfilePostCell_ID"
+		case photos = "PhotosTableViewCell_ID"
 	}
 
 	let posts: [Post] = [
@@ -99,6 +100,8 @@ class ProfileViewController: UIViewController {
 
 		postsTableView.register(CustomPostCell.self, forCellReuseIdentifier: CellReuseID.base.rawValue)
 
+		postsTableView.register(PhotosTableViewCell.self, forCellReuseIdentifier: CellReuseID.photos.rawValue)
+
 		postsTableView.delegate = self
 		postsTableView.dataSource = self
 	}
@@ -116,25 +119,50 @@ class ProfileViewController: UIViewController {
 extension ProfileViewController: UITableViewDataSource, UITableViewDelegate {
 
 	func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-		guard let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: HeaderFooterReuseID.base.rawValue) as? ProfileHeaderView else { return nil }
-		headerView.contentView.backgroundColor = .systemGray6
-		return headerView
+		if section == 0 {
+			guard let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: HeaderFooterReuseID.base.rawValue) as? ProfileHeaderView else {
+				return nil
+			}
+			headerView.contentView.backgroundColor = .systemGray6
+			return headerView
+		}
+		return nil
 	}
 
 	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		posts.count
+		if section == 0 {
+			return 1
+		}
+		return posts.count
 	}
-	
+
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+		if indexPath.section == 0 {
+			guard let cell = tableView.dequeueReusableCell(withIdentifier: CellReuseID.photos.rawValue, for: indexPath) as? PhotosTableViewCell else {
+				fatalError("Could not dequeue PhotosTableViewCell")
+			}
+			return cell
+		}
 		guard let cell = tableView.dequeueReusableCell(withIdentifier: CellReuseID.base.rawValue, for: indexPath) as? CustomPostCell else {
-			fatalError("could not dequeue cell")
+			fatalError("Could not dequeue CustomPostCell")
 		}
 		cell.update(posts[indexPath.row])
 		return cell
 	}
 
 	func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-		return 220
+		return section == 1 ? 0 : 220
 	}
 
+	func numberOfSections(in tableView: UITableView) -> Int {
+		return 2
+	}
+
+	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+		if indexPath.section == 0 {
+			let galleryVC = PhotoGalleryViewController()
+				navigationController?.pushViewController(galleryVC, animated: true)
+			} else {
+			}
+	}
 }
