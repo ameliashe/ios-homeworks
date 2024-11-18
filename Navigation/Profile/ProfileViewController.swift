@@ -95,13 +95,9 @@ class ProfileViewController: UIViewController {
 		postsTableView.estimatedRowHeight = 200
 		postsTableView.tableFooterView = UIView()
 		postsTableView.contentInsetAdjustmentBehavior = .never
-
 		postsTableView.register(ProfileHeaderView.self, forHeaderFooterViewReuseIdentifier: HeaderFooterReuseID.base.rawValue)
-
 		postsTableView.register(CustomPostCell.self, forCellReuseIdentifier: CellReuseID.base.rawValue)
-
 		postsTableView.register(PhotosTableViewCell.self, forCellReuseIdentifier: CellReuseID.photos.rawValue)
-
 		postsTableView.delegate = self
 		postsTableView.dataSource = self
 	}
