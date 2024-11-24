@@ -12,12 +12,12 @@ class ProfileHeaderView: UITableViewHeaderFooterView {
 	let avatarImageView: UIImageView = {
 		let imageView = UIImageView()
 		imageView.image = UIImage(named: "cat")
-		imageView.layer.cornerRadius = 50
 		imageView.layer.borderWidth = 3
 		imageView.layer.borderColor = UIColor.white.cgColor
 		imageView.contentMode = .scaleAspectFill
 		imageView.clipsToBounds = true
 		imageView.translatesAutoresizingMaskIntoConstraints = false
+		imageView.isUserInteractionEnabled = true
 
 		return imageView
 	}()
@@ -70,17 +70,25 @@ class ProfileHeaderView: UITableViewHeaderFooterView {
 		return field
 	}()
 
+	var avatarTapped: (() -> Void)?
+
 	override init(reuseIdentifier: String?) {
 		super.init(reuseIdentifier: reuseIdentifier)
 
 		addSubviews()
 		setupConstraints()
 		configureStatusChange()
+		configureAvatarTap()
 	}
 
 	 required init?(coder: NSCoder) {
 		 super.init(coder: coder)
 	 }
+
+	override func layoutSubviews() {
+		super.layoutSubviews()
+		avatarImageView.layer.cornerRadius = avatarImageView.frame.height / 2
+	}
 
 	private func addSubviews() {
 		addSubview(avatarImageView)
@@ -123,6 +131,10 @@ class ProfileHeaderView: UITableViewHeaderFooterView {
 		])
 	}
 
+	func configureAvatarTap() {
+		let tapGesture = UITapGestureRecognizer(target: self, action: #selector(avatarTappedAction))
+			avatarImageView.addGestureRecognizer(tapGesture)
+	}
 
 	private var statusText: String = "Лежу на подоконнике"
 
@@ -135,6 +147,10 @@ class ProfileHeaderView: UITableViewHeaderFooterView {
 		print("Button pressed. Setting status to: \(statusText)")
 			statusLabel.text = statusText
 		}
+
+	@objc private func avatarTappedAction() {
+		avatarTapped?()
+	}
 }
 
 class TextField: UITextField {
