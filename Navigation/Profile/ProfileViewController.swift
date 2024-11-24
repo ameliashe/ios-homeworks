@@ -139,7 +139,7 @@ class ProfileViewController: UIViewController {
 			overlayView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
 
 			closeButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
-			closeButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20)
+			closeButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
 		])
 	}
 
@@ -196,25 +196,25 @@ class ProfileViewController: UIViewController {
 		})
 
 		guard let headerView = self.profileHeaderView else {
-			  print("Header view not found")
-			  return
-		  }
-		  let avatar = headerView.avatarImageView
-		  guard let avatarSuperview = avatar.superview else {
-			  print("Avatar superview not found")
-			  return
-		  }
-		  let avatarInitialFrame = avatarSuperview.convert(avatar.frame, to: view)
+			print("Header view not found")
+			return
+		}
+		let avatar = headerView.avatarImageView
+		guard let avatarSuperview = avatar.superview else {
+			print("Avatar superview not found")
+			return
+		}
+		let avatarInitialFrame = avatarSuperview.convert(avatar.frame, to: view)
 
 
 		UIView.animate(withDuration: 0.5, animations: {
-			   self.overlayView.alpha = 0
-			   avatarCopy.frame = avatarInitialFrame
-			   avatarCopy.layer.cornerRadius = avatar.frame.height / 2
-		   }, completion: { _ in
-			   avatarCopy.removeFromSuperview()
-			   avatar.isHidden = false
-		   })
+			self.overlayView.alpha = 0
+			avatarCopy.frame = avatarInitialFrame
+			avatarCopy.layer.cornerRadius = avatar.frame.height / 2
+		}, completion: { _ in
+			avatarCopy.removeFromSuperview()
+			avatar.isHidden = false
+		})
 	}
 }
 
