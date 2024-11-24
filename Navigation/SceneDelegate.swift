@@ -37,6 +37,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 		tabBarController.selectedIndex = 0
 		tabBarController.tabBar.isTranslucent = false
 
+		let profileVC = ProfileViewController()
+		let navigationController = UINavigationController(rootViewController: profileVC)
+		window.rootViewController = navigationController
+
 		window.rootViewController = tabBarController
 		window.makeKeyAndVisible()
 
