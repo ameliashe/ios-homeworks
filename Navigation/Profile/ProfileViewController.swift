@@ -63,7 +63,6 @@ class ProfileViewController: UIViewController {
 	}
 
 	func setupView() {
-//		view.backgroundColor = .systemGray6
 #if DEBUG
 		view.backgroundColor = .systemYellow
 #else
