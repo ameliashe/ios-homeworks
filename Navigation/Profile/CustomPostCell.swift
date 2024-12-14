@@ -6,9 +6,12 @@
 //
 
 import UIKit
+import iOSIntPackage
 import StorageService
 
 class CustomPostCell: UITableViewCell {
+
+	lazy var imageProcessor = ImageProcessor()
 
 	let authorLabel: UILabel = {
 		let label = UILabel()
@@ -97,7 +100,6 @@ class CustomPostCell: UITableViewCell {
 			viewsLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
 			viewsLabel.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: 16),
 			viewsLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -16)
-
 		])
 	}
 
@@ -106,10 +108,26 @@ class CustomPostCell: UITableViewCell {
 		accessoryType = .none
 	}
 
+	func processImage(with image: UIImage, completion:  @escaping (UIImage?) -> Void) {
+		imageProcessor.processImage(sourceImage: image, filter: .noir) { processedImage in
+			completion(processedImage)
+		}
+	}
+
+	lazy var completionClosure: (UIImage?) -> Void = { image in
+		self.attachedImageView.image = image
+	}
+
 	func update(_ model: Post) {
 		authorLabel.text = model.author
 		descriptionLabel.text = model.description
-		attachedImageView.image = UIImage(named: model.image)
+
+		if let image = UIImage(named: model.image) {
+			processImage(with: image) { filteredImage in
+				self.attachedImageView.image = filteredImage
+			}
+		}
+
 		likesLabel.text = "Likes: \(model.likes)"
 		viewsLabel.text = "Views: \(model.views)"
 

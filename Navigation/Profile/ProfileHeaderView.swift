@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SnapKit
 import StorageService
 
 class ProfileHeaderView: UITableViewHeaderFooterView {
@@ -17,7 +18,6 @@ class ProfileHeaderView: UITableViewHeaderFooterView {
 		imageView.layer.borderColor = UIColor.white.cgColor
 		imageView.contentMode = .scaleAspectFill
 		imageView.clipsToBounds = true
-		imageView.translatesAutoresizingMaskIntoConstraints = false
 		imageView.isUserInteractionEnabled = true
 
 		return imageView
@@ -28,7 +28,6 @@ class ProfileHeaderView: UITableViewHeaderFooterView {
 		label.text = "Рыжуля"
 		label.font = .systemFont(ofSize: .init(18), weight: .bold)
 		label.textColor = .black
-		label.translatesAutoresizingMaskIntoConstraints = false
 
 		return label
 	}()
@@ -38,7 +37,6 @@ class ProfileHeaderView: UITableViewHeaderFooterView {
 		label.text = "Лежу на подоконнике"
 		label.font = .systemFont(ofSize: .init(14), weight: .light)
 		label.textColor = .gray
-		label.translatesAutoresizingMaskIntoConstraints = false
 
 		return label
 	}()
@@ -53,7 +51,7 @@ class ProfileHeaderView: UITableViewHeaderFooterView {
 		button.layer.shadowOffset = .init(width: 4, height: 4)
 		button.layer.shadowRadius = 4
 		button.layer.shadowOpacity = 0.7
-		button.translatesAutoresizingMaskIntoConstraints = false
+
 		return button
 	}()
 
@@ -67,7 +65,7 @@ class ProfileHeaderView: UITableViewHeaderFooterView {
 		field.layer.borderWidth = 1
 		field.layer.borderColor = UIColor.black.cgColor
 		field.isUserInteractionEnabled = true
-		field.translatesAutoresizingMaskIntoConstraints = false
+
 		return field
 	}()
 
@@ -104,32 +102,36 @@ class ProfileHeaderView: UITableViewHeaderFooterView {
 		setStatusButton.addTarget(self, action: #selector(setStatusTapped), for: .touchUpInside)
 	}
 
-	private func setupConstraints() {
+	func setupConstraints() {
+		avatarImageView.snp.makeConstraints { make in
+			make.top.leading.equalToSuperview().offset(16)
+			make.width.height.equalTo(100)
+		}
 
-		NSLayoutConstraint.activate([
-			avatarImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
-			avatarImageView.topAnchor.constraint(equalTo: topAnchor, constant: 16),
-			avatarImageView.widthAnchor.constraint(equalToConstant: 100),
-			avatarImageView.heightAnchor.constraint(equalToConstant: 100),
+		fullNameLabel.snp.makeConstraints { make in
+			make.top.equalTo(avatarImageView.snp.top).offset(11)
+			make.leading.equalTo(avatarImageView.snp.trailing).offset(16)
+			make.trailing.equalToSuperview().offset(-16)
+		}
 
-			fullNameLabel.topAnchor.constraint(equalTo: avatarImageView.topAnchor, constant: 11),
-			fullNameLabel.leadingAnchor.constraint(equalTo: avatarImageView.trailingAnchor, constant: 16),
-			fullNameLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
+		statusLabel.snp.makeConstraints { make in
+			make.bottom.equalTo(avatarImageView.snp.bottom).offset(-18)
+			make.leading.trailing.equalTo(fullNameLabel)
+		}
 
-			statusLabel.bottomAnchor.constraint(equalTo: avatarImageView.bottomAnchor, constant: -18),
-			statusLabel.leadingAnchor.constraint(equalTo: fullNameLabel.leadingAnchor),
-			statusLabel.trailingAnchor.constraint(equalTo: fullNameLabel.trailingAnchor),
+		statusTextField.snp.makeConstraints { make in
+			make.top.equalTo(statusLabel.snp.bottom).offset(8)
+			make.leading.trailing.equalTo(fullNameLabel)
+			make.height.equalTo(40)
+		}
 
-			statusTextField.topAnchor.constraint(equalTo: statusLabel.bottomAnchor, constant: 8),
-			statusTextField.leadingAnchor.constraint(equalTo: fullNameLabel.leadingAnchor),
-			statusTextField.trailingAnchor.constraint(equalTo: fullNameLabel.trailingAnchor),
-			statusTextField.heightAnchor.constraint(equalToConstant: 40),
+		setStatusButton.snp.makeConstraints { make in
+			make.top.equalTo(statusTextField.snp.bottom).offset(8)
+			make.leading.equalToSuperview().offset(16)
+			make.trailing.equalToSuperview().offset(-16)
+			make.height.equalTo(50)
+		}
 
-			setStatusButton.topAnchor.constraint(equalTo: statusTextField.bottomAnchor, constant: 8),
-			setStatusButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
-			setStatusButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
-			setStatusButton.heightAnchor.constraint(equalToConstant: 50)
-		])
 	}
 
 	func configureAvatarTap() {
