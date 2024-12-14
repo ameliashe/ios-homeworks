@@ -7,10 +7,55 @@
 
 import Foundation
 
-struct Post {
-	let author: String
-	let description: String
-	let image: String
-	let likes: Int
-	let views: Int
+public struct Post {
+	public let author: String
+	public let description: String
+	public let image: String
+	public let likes: Int
+	public let views: Int
 }
+
+public let posts: [Post] = [
+	Post(
+		author: "Анна Янкова",
+		description: "Невероятные виды на закат. Вчера была отличная погода, и я сделала несколько снимков у озера.",
+		image: "sunset",
+		likes: 120,
+		views: 430
+	),
+	Post(
+		author: "Борис Юрьев",
+		description: "Люблю готовить! Сегодняшний эксперимент удался: попробовал новый рецепт пасты с морепродуктами. Все, кто пробовал, остались в восторге – обязательно буду готовить снова!",
+		image: "food",
+		likes: 95,
+		views: 210
+	),
+	Post(
+		author: "Виктория Этюхова",
+		description: "Путешествия - это всегда приключение!",
+		image: "mountain",
+		likes: 145,
+		views: 500
+	),
+	Post(
+		author: "Геннадий Щербаков",
+		description: "Прогулка в лесу – лучшее лекарство от суеты. Сегодня обнаружил уютное место у реки, где можно посидеть в тишине и насладиться природой. Такие моменты помогают перезагрузиться.",
+		image: "forest",
+		likes: 90,
+		views: 250
+	),
+	Post(
+		author: "Диана Шастун",
+		description: "Сегодня я посетила выставку современного искусства и вдохновилась на создание своего арт-проекта. Мне очень понравилось сочетание ярких цветов и минимализма в работах художников.",
+		image: "art",
+		likes: 60,
+		views: 180
+	),
+	Post(
+		author: "Евгений Чарков",
+		description: "Вчера я попробовал новый сорт чая – улун с легкими цветочными нотками. Он не только обладает приятным вкусом, но и помогает расслабиться после долгого дня. Определенно, теперь это мой фаворит на вечерние чаепития!",
+		image: "tea",
+		likes: 75,
+		views: 300
+	)
+]
