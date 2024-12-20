@@ -132,12 +132,18 @@ class ProfileHeaderView: UITableViewHeaderFooterView {
 		])
 	}
 
+	func configure(with user: User) {
+		avatarImageView.image = user.avatar
+		fullNameLabel.text = user.fullName
+		statusLabel.text = user.status
+	}
+
 	func configureAvatarTap() {
 		let tapGesture = UITapGestureRecognizer(target: self, action: #selector(avatarTappedAction))
 			avatarImageView.addGestureRecognizer(tapGesture)
 	}
 
-	private var statusText: String = "Лежу на подоконнике"
+	private var statusText: String = ""
 
 	@objc private func statusTextChanged(_ textField: UITextField) {
 		  statusText = textField.text ?? ""
