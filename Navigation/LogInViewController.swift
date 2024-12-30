@@ -9,6 +9,12 @@ import UIKit
 
 class LogInViewController: UIViewController {
 
+#if DEBUG
+		let activeUserService = TestUserService()
+#else
+		let activeUserService = CurrentUserService()
+#endif
+
 	lazy var credentialsStackView: UIStackView = {
 		let stackView = UIStackView(arrangedSubviews: [usernameTextField, separatorView, passwordTextField])
 		stackView.axis = .vertical
@@ -204,7 +210,23 @@ class LogInViewController: UIViewController {
 	}
 
 	@objc func loginButtonTapped() {
-		let profileViewController = ProfileViewController()
-		navigationController?.pushViewController(profileViewController, animated: true)
+		guard let login = usernameTextField.text, !login.isEmpty else {
+			showErrorAlert(message: "Введите логин!")
+			return
+		}
+
+		if let user = activeUserService.getUser(login: login) {
+			let profileViewController = ProfileViewController()
+			profileViewController.user = user
+			navigationController?.pushViewController(profileViewController, animated: true)
+		} else {
+			showErrorAlert(message: "Неверный логин!")
+		}
+	}
+
+	func showErrorAlert(message: String) {
+		let alert = UIAlertController(title: "Ошибка", message: message, preferredStyle: .alert)
+		alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+		present(alert, animated: true, completion: nil)
 	}
 }

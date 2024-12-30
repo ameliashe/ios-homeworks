@@ -10,6 +10,8 @@ import StorageService
 
 class ProfileViewController: UIViewController {
 
+	var user: User?
+
 	private enum HeaderFooterReuseID: String {
 		case base = "ProfileHeaderView_ID"
 	}
@@ -53,7 +55,6 @@ class ProfileViewController: UIViewController {
 		setupConstraints()
 		setupTableView()
 		setupCloseButton ()
-
     }
 
 	func addSubviews() {
@@ -186,6 +187,11 @@ extension ProfileViewController: UITableViewDataSource, UITableViewDelegate {
 			guard let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: HeaderFooterReuseID.base.rawValue) as? ProfileHeaderView else {
 				return nil
 			}
+
+			if let user = user {
+				headerView.configure(with: user)
+			}
+
 			headerView.contentView.backgroundColor = .systemGray6
 			headerView.avatarTapped = { [weak self] in
 				guard let self = self else { return }
