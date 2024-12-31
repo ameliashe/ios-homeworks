@@ -31,23 +31,23 @@ class ProfileViewController: UIViewController {
 	}()
 
 	let overlayView: UIView = {
-			let view = UIView()
-			view.backgroundColor = UIColor.black.withAlphaComponent(0.8)
-			view.translatesAutoresizingMaskIntoConstraints = false
-			view.alpha = 0
-			return view
-		}()
+		let view = UIView()
+		view.backgroundColor = UIColor.black.withAlphaComponent(0.8)
+		view.translatesAutoresizingMaskIntoConstraints = false
+		view.alpha = 0
+		return view
+	}()
 
 	let closeButton: UIButton = {
-		   let button = UIButton(type: .system)
-		   button.setImage(UIImage(systemName: "xmark"), for: .normal)
-		   button.tintColor = .white
-		   button.translatesAutoresizingMaskIntoConstraints = false
-		   button.alpha = 0
-		   return button
-	   }()
+		let button = UIButton(type: .system)
+		button.setImage(UIImage(systemName: "xmark"), for: .normal)
+		button.tintColor = .white
+		button.translatesAutoresizingMaskIntoConstraints = false
+		button.alpha = 0
+		return button
+	}()
 
-    override func viewDidLoad() {
+	override func viewDidLoad() {
 		super.viewDidLoad()
 
 		addSubviews()
@@ -55,7 +55,7 @@ class ProfileViewController: UIViewController {
 		setupConstraints()
 		setupTableView()
 		setupCloseButton ()
-    }
+	}
 
 	func addSubviews() {
 		view.addSubview(postsTableView)
@@ -235,8 +235,8 @@ extension ProfileViewController: UITableViewDataSource, UITableViewDelegate {
 	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		if indexPath.section == 0 {
 			let galleryVC = PhotoGalleryViewController()
-				navigationController?.pushViewController(galleryVC, animated: true)
-			} else {
-			}
+			navigationController?.pushViewController(galleryVC, animated: true)
+		} else {
+		}
 	}
 }

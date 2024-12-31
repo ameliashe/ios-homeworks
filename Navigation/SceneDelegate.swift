@@ -41,6 +41,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 		let navigationController = UINavigationController(rootViewController: profileVC)
 		window.rootViewController = navigationController
 
+//		let loginInspector = LoginInspector()
+//		logInViewController.loginDelegate = loginInspector
+
+		let myLoginFactory = MyLoginFactory()
+		logInViewController.loginDelegate = myLoginFactory.makeLoginInspector()
+
 		window.rootViewController = tabBarController
 		window.makeKeyAndVisible()
 

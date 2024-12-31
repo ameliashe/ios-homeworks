@@ -15,6 +15,8 @@ class LogInViewController: UIViewController {
 		let activeUserService = CurrentUserService()
 #endif
 
+	var loginDelegate: LoginViewControllerDelegate? = nil
+
 	lazy var credentialsStackView: UIStackView = {
 		let stackView = UIStackView(arrangedSubviews: [usernameTextField, separatorView, passwordTextField])
 		stackView.axis = .vertical
@@ -210,11 +212,14 @@ class LogInViewController: UIViewController {
 	}
 
 	@objc func loginButtonTapped() {
-		guard let login = usernameTextField.text, !login.isEmpty else {
-			showErrorAlert(message: "Введите логин!")
+		guard let login = usernameTextField.text, let password = passwordTextField.text, !login.isEmpty else {
+			showErrorAlert(message: "Введите логин/пароль!")
 			return
 		}
-
+		guard loginDelegate?.check(login: login, password: password) == true else {
+			showErrorAlert(message: "Неверный логин/пароль!")
+			return
+		}
 		if let user = activeUserService.getUser(login: login) {
 			let profileViewController = ProfileViewController()
 			profileViewController.user = user
@@ -228,5 +233,18 @@ class LogInViewController: UIViewController {
 		let alert = UIAlertController(title: "Ошибка", message: message, preferredStyle: .alert)
 		alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
 		present(alert, animated: true, completion: nil)
+	}
+}
+
+protocol LoginViewControllerDelegate {
+
+	func check(login: String, password: String) -> Bool
+
+}
+
+struct LoginInspector: LoginViewControllerDelegate {
+
+	func check(login: String, password: String) -> Bool {
+		Checker.shared.check(inputLogin: login, inputPassword: password)
 	}
 }
