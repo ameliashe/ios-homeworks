@@ -17,8 +17,8 @@ class PhotoPreviewCollectionViewCell: UICollectionViewCell {
 		return imageView
 	}()
 
-	func update(_ imageName: String) {
-		imageView.image = UIImage(named: imageName)
+	func update(_ imageName: UIImage) {
+		imageView.image = imageName
 		addSubviews()
 		configure()
 	}

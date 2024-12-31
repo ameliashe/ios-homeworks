@@ -12,10 +12,7 @@ class Checker {
 	private let login: String = "amelia"
 	private let password = "123123"
 
-	static let shared: Checker = {
-		let checker = Checker()
-		return checker
-	}()
+	static let shared = Checker()
 
 	private init() {}
 

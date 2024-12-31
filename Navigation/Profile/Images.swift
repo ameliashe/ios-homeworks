@@ -6,5 +6,6 @@
 //
 
 import Foundation
+import UIKit
 
-let imageList = (1...20).map { "image\($0)" }
+let imageList: [UIImage] = (1...20).map { UIImage(named:"image\($0)")! }
