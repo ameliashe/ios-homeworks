@@ -46,9 +46,9 @@ class FeedViewController: UIViewController {
 		return button
 	}()
 
-	private let guessTextField: UITextField = {
-		let field = UITextField()
-		field.placeholder = "  Guess..."
+	private let guessTextField: TextField = {
+		let field = TextField()
+		field.placeholder = "Guess..."
 		field.backgroundColor = .white
 		field.font = .systemFont(ofSize: .init(15), weight: .regular)
 		field.textColor = .black
