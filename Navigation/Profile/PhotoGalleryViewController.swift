@@ -6,8 +6,12 @@
 //
 
 import UIKit
+import iOSIntPackage
 
 class PhotoGalleryViewController: UIViewController {
+
+	let imagePublisher = ImagePublisherFacade()
+	var receivedImages = [UIImage]()
 
 	let identifier: String = "PhotoGalleryCell"
 	let itemsPerRow: CGFloat = 3
@@ -31,16 +35,20 @@ class PhotoGalleryViewController: UIViewController {
 
 		addSubviews()
 		addConstraints()
+
+		imagePublisher.addImagesWithTimer(time: 0.5, repeat: 10, userImages: imageList)
     }
 
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
 		navigationController?.navigationBar.isHidden = false
+		imagePublisher.subscribe(self)
 	}
 
 	override func viewWillDisappear(_ animated: Bool) {
 		super.viewWillDisappear(animated)
 		navigationController?.navigationBar.isHidden = true
+		imagePublisher.removeSubscription(for: self)
 	}
 
 	func addSubviews() {
@@ -61,10 +69,10 @@ class PhotoGalleryViewController: UIViewController {
 	}
 }
 
-extension PhotoGalleryViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+extension PhotoGalleryViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, ImageLibrarySubscriber {
 
 	func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-		return imageList.count
+		return receivedImages.count
 	}
 
 	func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -72,7 +80,7 @@ extension PhotoGalleryViewController: UICollectionViewDelegate, UICollectionView
 			fatalError("could not dequeue cell")
 		}
 
-		cell.update(imageList[indexPath.row])
+		cell.update(receivedImages[indexPath.row])
 		cell.contentView.layer.masksToBounds = true
 		cell.contentView.clipsToBounds = true
 		return cell
@@ -93,6 +101,11 @@ extension PhotoGalleryViewController: UICollectionViewDelegate, UICollectionView
 
 	func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
 		return sectionInsets
+	}
+
+	func receive(images: [UIImage]) {
+		receivedImages.append(contentsOf: images)
+		collectionView.reloadData()
 	}
 
 }
