@@ -9,23 +9,27 @@ import UIKit
 
 class InfoViewController: UIViewController {
 
+	private lazy var alertButton: CustomButton = {
+		let button = CustomButton(
+			title: "Show Alert",
+			titleColor: .white
+		) { [weak self] in
+			self?.alertButtonTapped()
+		}
+		button.translatesAutoresizingMaskIntoConstraints = false
+		return button
+	}()
+
 	override func viewDidLoad() {
 		super.viewDidLoad()
-
-		let alertButton: UIButton = {
-			let button = UIButton(type: .system)
-			button.setTitle("Show Alert", for: .normal)
-			button.addTarget(self, action: #selector(alertButtonTapped), for: .touchUpInside)
-
-			return button
-		}()
-
 		view.addSubview(alertButton)
 
 		alertButton.translatesAutoresizingMaskIntoConstraints = false
 		NSLayoutConstraint.activate([
-			alertButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
 			alertButton.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+			alertButton.heightAnchor.constraint(equalToConstant: 50),
+			alertButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+			alertButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16)
 		])
 	}
 

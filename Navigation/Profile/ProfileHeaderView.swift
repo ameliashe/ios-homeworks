@@ -43,16 +43,13 @@ class ProfileHeaderView: UITableViewHeaderFooterView {
 		return label
 	}()
 
-	let setStatusButton: UIButton = {
-		let button = UIButton()
-		button.setTitle("Show status", for: .normal)
-		button.setTitleColor(.white, for: .normal)
-		button.backgroundColor = .systemBlue
-		button.layer.cornerRadius = 4
-		button.layer.shadowColor = UIColor.black.cgColor
-		button.layer.shadowOffset = .init(width: 4, height: 4)
-		button.layer.shadowRadius = 4
-		button.layer.shadowOpacity = 0.7
+	private lazy var setStatusButton: CustomButton = {
+		let button = CustomButton(
+			title: "Show status",
+			titleColor: .white
+		) { [weak self] in
+			self?.setStatusTapped()
+		}
 		button.translatesAutoresizingMaskIntoConstraints = false
 		return button
 	}()
@@ -63,7 +60,7 @@ class ProfileHeaderView: UITableViewHeaderFooterView {
 		field.backgroundColor = .white
 		field.font = .systemFont(ofSize: .init(15), weight: .regular)
 		field.textColor = .black
-		field.layer.cornerRadius = 12
+		field.layer.cornerRadius = 10
 		field.layer.borderWidth = 1
 		field.layer.borderColor = UIColor.black.cgColor
 		field.isUserInteractionEnabled = true
@@ -82,9 +79,9 @@ class ProfileHeaderView: UITableViewHeaderFooterView {
 		configureAvatarTap()
 	}
 
-	 required init?(coder: NSCoder) {
-		 super.init(coder: coder)
-	 }
+	required init?(coder: NSCoder) {
+		super.init(coder: coder)
+	}
 
 	override func layoutSubviews() {
 		super.layoutSubviews()
@@ -101,7 +98,6 @@ class ProfileHeaderView: UITableViewHeaderFooterView {
 
 	func configureStatusChange() {
 		statusTextField.addTarget(self, action: #selector(statusTextChanged(_:)), for: .editingChanged)
-		setStatusButton.addTarget(self, action: #selector(setStatusTapped), for: .touchUpInside)
 	}
 
 	private func setupConstraints() {
@@ -140,20 +136,20 @@ class ProfileHeaderView: UITableViewHeaderFooterView {
 
 	func configureAvatarTap() {
 		let tapGesture = UITapGestureRecognizer(target: self, action: #selector(avatarTappedAction))
-			avatarImageView.addGestureRecognizer(tapGesture)
+		avatarImageView.addGestureRecognizer(tapGesture)
 	}
 
 	private var statusText: String = ""
 
 	@objc private func statusTextChanged(_ textField: UITextField) {
-		  statusText = textField.text ?? ""
+		statusText = textField.text ?? ""
 		print("Status text changed: \(statusText)")
-	  }
+	}
 
-	@objc private func setStatusTapped() {
+	private func setStatusTapped() {
 		print("Button pressed. Setting status to: \(statusText)")
-			statusLabel.text = statusText
-		}
+		statusLabel.text = statusText
+	}
 
 	@objc private func avatarTappedAction() {
 		avatarTapped?()

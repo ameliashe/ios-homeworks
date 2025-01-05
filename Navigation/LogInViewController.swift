@@ -86,13 +86,13 @@ class LogInViewController: UIViewController {
 		return imageView
 	}()
 
-	let loginButton: UIButton = {
-		let button = UIButton()
-		button.setTitle("Log In", for: .normal)
-		button.setTitleColor(.white, for: .normal)
-		button.setBackgroundImage(UIImage(named: "blue_pixel"), for: .normal)
-		button.layer.masksToBounds = true
-		button.layer.cornerRadius = 10
+	private lazy var loginButton: CustomButton = {
+		let button = CustomButton(
+			title: "Log In",
+			titleColor: .white
+		) { [weak self] in
+			self?.loginButtonTapped()
+		}
 		button.translatesAutoresizingMaskIntoConstraints = false
 		return button
 	}()
@@ -102,7 +102,6 @@ class LogInViewController: UIViewController {
 
 		viewSetup()
 		layoutConstraintsSetup()
-		configureLoginButton()
 	}
 
 	override func viewWillAppear(_ animated: Bool) {
@@ -199,9 +198,6 @@ class LogInViewController: UIViewController {
 		notificationCenter.removeObserver(self)
 	}
 
-	func configureLoginButton() {
-		loginButton.addTarget(self, action: #selector(loginButtonTapped), for: .touchUpInside)
-	}
 
 	@objc func willShowKeyboard(_ notification: NSNotification) {
 		let keyboardHeight = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue.height
@@ -212,7 +208,7 @@ class LogInViewController: UIViewController {
 		scrollView.contentInset.bottom = 0.0
 	}
 
-	@objc func loginButtonTapped() {
+	func loginButtonTapped() {
 		guard let login = usernameTextField.text, let password = passwordTextField.text, !login.isEmpty else {
 			showErrorAlert(message: "Введите логин/пароль!")
 			return
