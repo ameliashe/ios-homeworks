@@ -104,7 +104,7 @@ extension PhotoGalleryViewController: UICollectionViewDelegate, UICollectionView
 	}
 
 	func receive(images: [UIImage]) {
-		receivedImages.append(contentsOf: images)
+		receivedImages = images
 		collectionView.reloadData()
 	}
 

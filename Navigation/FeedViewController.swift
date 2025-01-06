@@ -13,23 +13,44 @@ class FeedViewController: UIViewController {
 		let title: String
 	}
 
-	let postButton1: UIButton = {
-		let button = UIButton(type: .system)
-		button.setTitle("Show post", for: .normal)
+	private lazy var postButton1 = CustomButton(title: "Show post") { [weak self] in
+		self?.showPost()
+	}
 
-		return button
+	private lazy var postButton2 = CustomButton(title: "Show post") { [weak self] in
+		self?.showPost()
+	}
+
+	private lazy var checkGuessButton = CustomButton(title: "Check Guess") { [weak self] in
+		self?.checkButtonTapped()
+	}
+	
+	private let guessTextField: TextField = {
+		let field = TextField()
+		field.placeholder = "Guess..."
+		field.backgroundColor = .white
+		field.font = .systemFont(ofSize: .init(15), weight: .regular)
+		field.textColor = .black
+		field.layer.cornerRadius = 10
+		field.layer.borderWidth = 1
+		field.layer.borderColor = UIColor.black.cgColor
+		field.isUserInteractionEnabled = true
+		field.translatesAutoresizingMaskIntoConstraints = false
+		return field
 	}()
 
-	let postButton2: UIButton = {
-		let button = UIButton(type: .system)
-		button.setTitle("Show post", for: .normal)
-
-		return button
+	private let resultLabel: UILabel = {
+		let label = UILabel()
+		label.textColor = .black
+		label.text = "Result"
+		label.font = .systemFont(ofSize: .init(16), weight: .regular)
+		label.translatesAutoresizingMaskIntoConstraints = false
+		return label
 	}()
 
 	var post = Post(title: "This is a post!")
 
-	lazy var postButtonStackView: UIStackView = {
+	private lazy var postButtonStackView: UIStackView = {
 		let stackView = UIStackView()
 
 		stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -44,20 +65,39 @@ class FeedViewController: UIViewController {
 		return stackView
 	}()
 
+	var model: FeedModel
+
+	init(model: FeedModel) {
+		self.model = model
+		super.init(nibName: nil, bundle: nil)
+	}
+	
+	required init?(coder: NSCoder) {
+		fatalError("init(coder:) has not been implemented")
+	}
+	
 	override func viewDidLoad() {
 		super.viewDidLoad()
 
-		view.addSubview(postButtonStackView)
-		configureButtons()
+		NotificationCenter.default.addObserver(self, selector: #selector(handleCheckResult), name: .secretWordChecked, object: nil)
+		addSubviews()
 		configureStackView()
 	}
 
-	func configureButtons() {
-		postButton1.addTarget(self, action: #selector(showPost), for: .touchUpInside)
-		postButton2.addTarget(self, action: #selector(showPost), for: .touchUpInside)
+	override func viewWillDisappear(_ animated: Bool) {
+		super.viewWillDisappear(animated)
+
+		NotificationCenter.default.removeObserver(self)
 	}
 
-	@objc func showPost() {
+	func addSubviews() {
+		view.addSubview(postButtonStackView)
+		view.addSubview(guessTextField)
+		view.addSubview(checkGuessButton)
+		view.addSubview(resultLabel)
+	}
+
+	func showPost() {
 		let postVC = PostViewController()
 		postVC.postTitle = post.title
 		navigationController?.pushViewController(postVC, animated: true)
@@ -65,8 +105,39 @@ class FeedViewController: UIViewController {
 
 	func configureStackView() {
 		NSLayoutConstraint.activate([
-			postButtonStackView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-			postButtonStackView.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+			postButtonStackView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+			postButtonStackView.heightAnchor.constraint(equalToConstant: 110),
+			postButtonStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+			postButtonStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+
+			guessTextField.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16),
+			guessTextField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+			guessTextField.trailingAnchor.constraint(equalTo: view.centerXAnchor, constant: 16),
+			guessTextField.heightAnchor.constraint(equalToConstant: 40),
+
+			resultLabel.leadingAnchor.constraint(equalTo: guessTextField.trailingAnchor, constant: 16),
+			resultLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+			resultLabel.centerYAnchor.constraint(equalTo: guessTextField.centerYAnchor),
+
+			checkGuessButton.topAnchor.constraint(equalTo: guessTextField.bottomAnchor, constant: 16),
+			checkGuessButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+			checkGuessButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+			checkGuessButton.heightAnchor.constraint(equalToConstant: 50),
 		])
+	}
+
+	func checkButtonTapped() {
+	
+		guard let guessText = guessTextField.text else { return }
+
+		model.check(guessText)
+	}
+
+	@objc func handleCheckResult(_ notification: Notification) {
+		guard let userInfo = notification.userInfo,
+			  let isCorrect = userInfo["isCorrect"] as? Bool else { return }
+
+		resultLabel.text = isCorrect ? "is correct!" : "is wrong!"
+		resultLabel.textColor = isCorrect ? .green : .red
 	}
 }
