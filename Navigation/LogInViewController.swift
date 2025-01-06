@@ -86,16 +86,9 @@ class LogInViewController: UIViewController {
 		return imageView
 	}()
 
-	private lazy var loginButton: CustomButton = {
-		let button = CustomButton(
-			title: "Log In",
-			titleColor: .white
-		) { [weak self] in
-			self?.loginButtonTapped()
-		}
-		button.translatesAutoresizingMaskIntoConstraints = false
-		return button
-	}()
+	private lazy var loginButton = CustomButton(title: "Log In") { [weak self] in
+		self?.loginButtonTapped()
+	}
 
 	override func viewDidLoad() {
 		super.viewDidLoad()

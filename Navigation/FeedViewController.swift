@@ -13,39 +13,18 @@ class FeedViewController: UIViewController {
 		let title: String
 	}
 
-	private lazy var postButton1: CustomButton = {
-		let button = CustomButton(
-			title: "Show post",
-			titleColor: .white
-		) { [weak self] in
-			self?.showPost()
-		}
-		button.translatesAutoresizingMaskIntoConstraints = false
-		return button
-	}()
+	private lazy var postButton1 = CustomButton(title: "Show post") { [weak self] in
+		self?.showPost()
+	}
 
-	private lazy var postButton2: CustomButton = {
-		let button = CustomButton(
-			title: "Show post",
-			titleColor: .white
-		) { [weak self] in
-			self?.showPost()
-		}
-		button.translatesAutoresizingMaskIntoConstraints = false
-		return button
-	}()
+	private lazy var postButton2 = CustomButton(title: "Show post") { [weak self] in
+		self?.showPost()
+	}
 
-	private lazy var checkGuessButton: CustomButton = {
-		let button = CustomButton(
-			title: "Check Guess",
-			titleColor: .white
-		) { [weak self] in
-			self?.checkButtonTapped()
-		}
-		button.translatesAutoresizingMaskIntoConstraints = false
-		return button
-	}()
-
+	private lazy var checkGuessButton = CustomButton(title: "Check Guess") { [weak self] in
+		self?.checkButtonTapped()
+	}
+	
 	private let guessTextField: TextField = {
 		let field = TextField()
 		field.placeholder = "Guess..."

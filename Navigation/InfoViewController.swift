@@ -9,16 +9,9 @@ import UIKit
 
 class InfoViewController: UIViewController {
 
-	private lazy var alertButton: CustomButton = {
-		let button = CustomButton(
-			title: "Show Alert",
-			titleColor: .white
-		) { [weak self] in
-			self?.alertButtonTapped()
-		}
-		button.translatesAutoresizingMaskIntoConstraints = false
-		return button
-	}()
+	private lazy var alertButton = CustomButton(title: "Show Alert") { [weak self] in
+		self?.alertButtonTapped()
+	}
 
 	override func viewDidLoad() {
 		super.viewDidLoad()

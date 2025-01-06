@@ -43,16 +43,9 @@ class ProfileHeaderView: UITableViewHeaderFooterView {
 		return label
 	}()
 
-	private lazy var setStatusButton: CustomButton = {
-		let button = CustomButton(
-			title: "Show status",
-			titleColor: .white
-		) { [weak self] in
-			self?.setStatusTapped()
-		}
-		button.translatesAutoresizingMaskIntoConstraints = false
-		return button
-	}()
+	private lazy var setStatusButton = CustomButton(title: "Show status") { [weak self] in
+		self?.setStatusTapped()
+	}
 
 	let statusTextField: TextField = {
 		let field = TextField()
