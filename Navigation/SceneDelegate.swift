@@ -20,9 +20,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
 		let window = UIWindow(windowScene: scene)
 
-		let feedViewController = FeedViewController(model: FeedModel())
+		let feedModel = FeedModel()
+		let feedViewModel = FeedViewModel(model: feedModel)
+		let feedViewController = FeedViewController(viewModel: feedViewModel)
+
 		let logInViewController = LogInViewController()
 
+
+		//MARK: TabBar Setup
 		let feedNavigationController = UINavigationController(rootViewController: feedViewController)
 		let profileNavigationController = UINavigationController(rootViewController: logInViewController)
 
@@ -37,8 +42,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 		tabBarController.selectedIndex = 0
 		tabBarController.tabBar.isTranslucent = false
 
-		let profileVC = ProfileViewController()
-		let navigationController = UINavigationController(rootViewController: profileVC)
+		let navigationController = UINavigationController(rootViewController: logInViewController)
 		window.rootViewController = navigationController
 
 //		let loginInspector = LoginInspector()
