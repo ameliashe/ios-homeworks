@@ -8,11 +8,21 @@
 import Foundation
 
 final class FeedModel {
+
+	public struct Post {
+		let title: String
+	}
+
+	var posts: [Post] = [
+		Post(title: "This is the first post!"),
+		Post(title: "This is the second post!")
+	]
+
 	var secretWord: String = "block"
-	
-	func check(_ word: String) {
+
+	func check(_ word: String, completion: (Bool) -> Void) {
 		let isCorrect = word == secretWord
-		NotificationCenter.default.post(name: .secretWordChecked, object: nil, userInfo: ["isCorrect": isCorrect])
+		completion(isCorrect)
 	}
 }
 

@@ -9,22 +9,22 @@ import UIKit
 
 class FeedViewController: UIViewController {
 
-	struct Post {
-		let title: String
-	}
-
+	//MARK: UI elements
 	private lazy var postButton1 = CustomButton(title: "Show post") { [weak self] in
-		self?.showPost()
+		guard let post = self?.viewModel.getPost(at: 0) else { return }
+		self?.navigateToPostViewController(post)
 	}
 
 	private lazy var postButton2 = CustomButton(title: "Show post") { [weak self] in
-		self?.showPost()
+		guard let post = self?.viewModel.getPost(at: 1) else { return }
+		self?.navigateToPostViewController(post)
 	}
 
 	private lazy var checkGuessButton = CustomButton(title: "Check Guess") { [weak self] in
-		self?.checkButtonTapped()
+		guard let guessText = self?.guessTextField.text, !guessText.isEmpty else { return }
+		self?.viewModel.checkWord(guessText)
 	}
-	
+
 	private let guessTextField: TextField = {
 		let field = TextField()
 		field.placeholder = "Guess..."
@@ -48,8 +48,6 @@ class FeedViewController: UIViewController {
 		return label
 	}()
 
-	var post = Post(title: "This is a post!")
-
 	private lazy var postButtonStackView: UIStackView = {
 		let stackView = UIStackView()
 
@@ -65,42 +63,38 @@ class FeedViewController: UIViewController {
 		return stackView
 	}()
 
-	var model: FeedModel
+	//MARK: Model
+	var viewModel: FeedViewModel
 
-	init(model: FeedModel) {
-		self.model = model
+	//MARK: Initializers
+	init(viewModel: FeedViewModel) {
+		self.viewModel = viewModel
 		super.init(nibName: nil, bundle: nil)
 	}
-	
+
 	required init?(coder: NSCoder) {
 		fatalError("init(coder:) has not been implemented")
 	}
-	
+
+	//Lifecycle
 	override func viewDidLoad() {
 		super.viewDidLoad()
 
-		NotificationCenter.default.addObserver(self, selector: #selector(handleCheckResult), name: .secretWordChecked, object: nil)
+		viewModel.onResultUpdated = { [weak self] text, color in
+			self?.resultLabel.text = text
+			self?.resultLabel.textColor = color
+		}
+
 		addSubviews()
 		configureStackView()
 	}
 
-	override func viewWillDisappear(_ animated: Bool) {
-		super.viewWillDisappear(animated)
-
-		NotificationCenter.default.removeObserver(self)
-	}
-
+	//MARK: Layout
 	func addSubviews() {
 		view.addSubview(postButtonStackView)
 		view.addSubview(guessTextField)
 		view.addSubview(checkGuessButton)
 		view.addSubview(resultLabel)
-	}
-
-	func showPost() {
-		let postVC = PostViewController()
-		postVC.postTitle = post.title
-		navigationController?.pushViewController(postVC, animated: true)
 	}
 
 	func configureStackView() {
@@ -126,18 +120,9 @@ class FeedViewController: UIViewController {
 		])
 	}
 
-	func checkButtonTapped() {
-	
-		guard let guessText = guessTextField.text else { return }
-
-		model.check(guessText)
-	}
-
-	@objc func handleCheckResult(_ notification: Notification) {
-		guard let userInfo = notification.userInfo,
-			  let isCorrect = userInfo["isCorrect"] as? Bool else { return }
-
-		resultLabel.text = isCorrect ? "is correct!" : "is wrong!"
-		resultLabel.textColor = isCorrect ? .green : .red
+	private func navigateToPostViewController(_ post: FeedModel.Post) {
+		let postVC = PostViewController()
+		postVC.postTitle = post.title
+		navigationController?.pushViewController(postVC, animated: true)
 	}
 }
