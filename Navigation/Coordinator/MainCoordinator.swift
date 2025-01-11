@@ -37,8 +37,6 @@ class MainCoordinator: Coordinator {
 		feedCoordinator?.start()
 		profileCoordinator?.start()
 
-//		guard let feedNC, let profileNC else { return }
-
 		let controllers = [feedNC, profileNC]
 		tabBarController.viewControllers = controllers
 
