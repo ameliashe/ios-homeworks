@@ -13,45 +13,17 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
 
 	func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
-		// Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
-		// If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
-		// This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
 		guard let scene = (scene as? UIWindowScene) else { return }
 
 		let window = UIWindow(windowScene: scene)
 
-		let feedModel = FeedModel()
-		let feedViewModel = FeedViewModel(model: feedModel)
-		let feedViewController = FeedViewController(viewModel: feedViewModel)
-
-		let logInViewController = LogInViewController()
-
-
-		//MARK: TabBar Setup
-		let feedNavigationController = UINavigationController(rootViewController: feedViewController)
-		let profileNavigationController = UINavigationController(rootViewController: logInViewController)
-
-		let controllers = [feedNavigationController, profileNavigationController]
-
+		let navigationController = UINavigationController()
 		let tabBarController = UITabBarController()
-		tabBarController.viewControllers = controllers
 
-		feedNavigationController.tabBarItem = UITabBarItem(title: "Feed", image: UIImage(systemName: "list.bullet.rectangle"), tag: 0)
-		profileNavigationController.tabBarItem = UITabBarItem(title: "Profile", image: UIImage(systemName: "person"), tag: 1)
+		let mainCoordinator = MainCoordinator(navigationController: navigationController, tabBarController: tabBarController)
+		mainCoordinator.start()
 
-		tabBarController.selectedIndex = 0
-		tabBarController.tabBar.isTranslucent = false
-
-		let navigationController = UINavigationController(rootViewController: logInViewController)
 		window.rootViewController = navigationController
-
-//		let loginInspector = LoginInspector()
-//		logInViewController.loginDelegate = loginInspector
-
-		let myLoginFactory = MyLoginFactory()
-		logInViewController.loginDelegate = myLoginFactory.makeLoginInspector()
-
-		window.rootViewController = tabBarController
 		window.makeKeyAndVisible()
 
 		self.window = window

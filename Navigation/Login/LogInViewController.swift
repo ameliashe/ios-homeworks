@@ -34,8 +34,8 @@ class LogInViewController: UIViewController {
 	let usernameTextField: TextField = {
 		let textField = TextField()
 		textField.placeholder = "Email or phone"
-		textField.text = CurrentUserService().getUser(login: "")?.login
 		textField.backgroundColor = .systemGray6
+		textField.text = "amelia"
 		textField.textColor = .black
 		textField.font = .systemFont(ofSize: 16)
 		textField.tintColor = UIColor(named: "VKColor")
@@ -47,6 +47,7 @@ class LogInViewController: UIViewController {
 	let passwordTextField: TextField = {
 		let textField = TextField()
 		textField.placeholder = "Password"
+		textField.text = "123123"
 		textField.backgroundColor = .systemGray6
 		textField.textColor = .black
 		textField.font = .systemFont(ofSize: 16)

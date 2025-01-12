@@ -34,7 +34,6 @@ class PhotosTableViewCell: UITableViewCell {
 
 	lazy var photosPreviewCollectionView: UICollectionView = {
 		let layout = UICollectionViewFlowLayout()
-//		layout.scrollDirection = .horizontal
 
 		let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
 		collectionView.register(PhotoPreviewCollectionViewCell.self, forCellWithReuseIdentifier: identifier)
