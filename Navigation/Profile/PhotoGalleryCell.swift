@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import iOSIntPackage
 
 class PhotoGalleryCell: UICollectionViewCell {
 
@@ -16,7 +17,6 @@ class PhotoGalleryCell: UICollectionViewCell {
 		imageView.translatesAutoresizingMaskIntoConstraints = false
 		return imageView
 	}()
-
 
 	override init(frame: CGRect) {
 		super.init(frame: frame)

@@ -10,13 +10,12 @@ import iOSIntPackage
 
 class PhotoGalleryViewController: UIViewController {
 
-	let imagePublisher = ImagePublisherFacade()
-	var receivedImages = [UIImage]()
-
 	let identifier: String = "PhotoGalleryCell"
 	let itemsPerRow: CGFloat = 3
 	let spacing: CGFloat = 8
 	let sectionInsets = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
+	let imageProcessor = ImageProcessor()
+	var processedImages = [CGImage?]()
 
 	lazy var collectionView: UICollectionView = {
 		let layout = UICollectionViewFlowLayout()
@@ -29,26 +28,30 @@ class PhotoGalleryViewController: UIViewController {
 		return collectionView
 	}()
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
+	lazy var completionClosure: ([CGImage?]) -> Void = { images in
+		self.processedImages = images
+		DispatchQueue.main.async {
+			self.collectionView.reloadData()
+		}
+	}
+
+	override func viewDidLoad() {
+		super.viewDidLoad()
 		navigationItem.title = "Photo Gallery"
 
+		processImages(images: imageList, completionClosure: completionClosure)
 		addSubviews()
 		addConstraints()
-
-		imagePublisher.addImagesWithTimer(time: 0.5, repeat: 10, userImages: imageList)
-    }
+	}
 
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
 		navigationController?.navigationBar.isHidden = false
-		imagePublisher.subscribe(self)
 	}
 
 	override func viewWillDisappear(_ animated: Bool) {
 		super.viewWillDisappear(animated)
 		navigationController?.navigationBar.isHidden = true
-		imagePublisher.removeSubscription(for: self)
 	}
 
 	func addSubviews() {
@@ -56,7 +59,7 @@ class PhotoGalleryViewController: UIViewController {
 
 		collectionView.delegate = self
 		collectionView.dataSource = self
-		
+
 	}
 
 	func addConstraints() {
@@ -67,12 +70,30 @@ class PhotoGalleryViewController: UIViewController {
 			collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
 		])
 	}
+
+	//default – 1.641395292
+	//userInitiated – 1.605782291
+	//userInteractive – 1.589748083
+	//utility – 1.88586525
+	//background – 21.880509458
+	func processImages(images: [UIImage], completionClosure: @escaping ([CGImage?]) -> Void) {
+		let start = DispatchTime.now()
+		imageProcessor.processImagesOnThread(sourceImages: images, filter: .posterize, qos: .default) { processedImages in
+
+			let end = DispatchTime.now()
+			let nanoTime = end.uptimeNanoseconds - start.uptimeNanoseconds
+			let timeInterval = Double(nanoTime) / 1_000_000_000
+
+			   print(timeInterval)
+			completionClosure(processedImages)
+		}
+	}
 }
 
-extension PhotoGalleryViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, ImageLibrarySubscriber {
+extension PhotoGalleryViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
 
 	func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-		return receivedImages.count
+		return processedImages.count
 	}
 
 	func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -80,7 +101,10 @@ extension PhotoGalleryViewController: UICollectionViewDelegate, UICollectionView
 			fatalError("could not dequeue cell")
 		}
 
-		cell.update(receivedImages[indexPath.row])
+		if let cgImage = processedImages[indexPath.row] {
+			let uiImage = UIImage(cgImage: cgImage)
+			cell.update(uiImage)
+		}
 		cell.contentView.layer.masksToBounds = true
 		cell.contentView.clipsToBounds = true
 		return cell
@@ -103,9 +127,5 @@ extension PhotoGalleryViewController: UICollectionViewDelegate, UICollectionView
 		return sectionInsets
 	}
 
-	func receive(images: [UIImage]) {
-		receivedImages = images
-		collectionView.reloadData()
-	}
-
 }
+
