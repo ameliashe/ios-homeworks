@@ -2,7 +2,7 @@
 //  FeedViewController.swift
 //  Navigation
 //
-//  Created by Amelia Romanova on 10/13/24.
+//  Created by Amelia Shekikhacheva on 10/13/24.
 //
 
 import UIKit

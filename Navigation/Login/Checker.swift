@@ -2,7 +2,7 @@
 //  Checker.swift
 //  Navigation
 //
-//  Created by Amelia Romanova on 12/21/24.
+//  Created by Amelia Shekikhacheva on 12/21/24.
 //
 
 import Foundation

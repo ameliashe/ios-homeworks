@@ -2,7 +2,7 @@
 //  CustomButton.swift
 //  Navigation
 //
-//  Created by Amelia Romanova on 1/2/25.
+//  Created by Amelia Shekikhacheva on 1/2/25.
 //
 
 import UIKit

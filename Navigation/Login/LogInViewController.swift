@@ -2,12 +2,14 @@
 //  LogInViewController.swift
 //  Navigation
 //
-//  Created by Amelia Romanova on 11/5/24.
+//  Created by Amelia Shekikhacheva on 11/5/24.
 //
 
 import UIKit
 
 class LogInViewController: UIViewController {
+
+	//MARK: LoginService
 
 #if DEBUG
 		let activeUserService = TestUserService()
@@ -17,6 +19,7 @@ class LogInViewController: UIViewController {
 
 	var loginDelegate: LoginViewControllerDelegate? = nil
 
+	//MARK: UI Elements
 	lazy var credentialsStackView: UIStackView = {
 		let stackView = UIStackView(arrangedSubviews: [usernameTextField, separatorView, passwordTextField])
 		stackView.axis = .vertical
@@ -91,6 +94,11 @@ class LogInViewController: UIViewController {
 		self?.loginButtonTapped()
 	}
 
+	private lazy var guessPasswordButton = CustomButton(title: "Guess Password") { [weak self] in
+		
+	}
+
+	//MARK: Lifecycle
 	override func viewDidLoad() {
 		super.viewDidLoad()
 
@@ -110,6 +118,7 @@ class LogInViewController: UIViewController {
 		removeKeyboardObservers()
 	}
 
+	//MARK: UI Setup
 	func viewSetup() {
 		navigationController?.navigationBar.isHidden = true
 		view.backgroundColor = .white
@@ -169,6 +178,7 @@ class LogInViewController: UIViewController {
 		])
 	}
 
+	//MARK: Keyboard
 	private func setupKeyboardObservers() {
 		let notificationCenter = NotificationCenter.default
 
@@ -192,7 +202,6 @@ class LogInViewController: UIViewController {
 		notificationCenter.removeObserver(self)
 	}
 
-
 	@objc func willShowKeyboard(_ notification: NSNotification) {
 		let keyboardHeight = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue.height
 		scrollView.contentInset.bottom += keyboardHeight ?? 0.0
@@ -202,6 +211,7 @@ class LogInViewController: UIViewController {
 		scrollView.contentInset.bottom = 0.0
 	}
 
+	//MARK: User Interaction Methods
 	func loginButtonTapped() {
 		guard let login = usernameTextField.text, let password = passwordTextField.text, !login.isEmpty else {
 			showErrorAlert(message: "Введите логин/пароль!")
