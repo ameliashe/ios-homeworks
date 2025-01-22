@@ -2,7 +2,7 @@
 //  LoginFactory.swift
 //  Navigation
 //
-//  Created by Amelia Romanova on 12/30/24.
+//  Created by Amelia Shekikhacheva on 12/30/24.
 //
 
 import Foundation

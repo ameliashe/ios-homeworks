@@ -2,7 +2,7 @@
 //  User.swift
 //  Navigation
 //
-//  Created by Amelia Romanova on 12/15/24.
+//  Created by Amelia Shekikhacheva on 12/15/24.
 //
 import UIKit
 

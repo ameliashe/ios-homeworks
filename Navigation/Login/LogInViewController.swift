@@ -2,21 +2,24 @@
 //  LogInViewController.swift
 //  Navigation
 //
-//  Created by Amelia Romanova on 11/5/24.
+//  Created by Amelia Shekikhacheva on 11/5/24.
 //
 
 import UIKit
 
 class LogInViewController: UIViewController {
 
+	//MARK: LoginService
+
 #if DEBUG
-		let activeUserService = TestUserService()
+	let activeUserService = TestUserService()
 #else
-		let activeUserService = CurrentUserService()
+	let activeUserService = CurrentUserService()
 #endif
 
 	var loginDelegate: LoginViewControllerDelegate? = nil
 
+	//MARK: UI Elements
 	lazy var credentialsStackView: UIStackView = {
 		let stackView = UIStackView(arrangedSubviews: [usernameTextField, separatorView, passwordTextField])
 		stackView.axis = .vertical
@@ -44,10 +47,10 @@ class LogInViewController: UIViewController {
 		return textField
 	}()
 
-	let passwordTextField: TextField = {
+	private lazy var passwordTextField: TextField = {
 		let textField = TextField()
 		textField.placeholder = "Password"
-		textField.text = "123123"
+		//		textField.text = "123123"
 		textField.backgroundColor = .systemGray6
 		textField.textColor = .black
 		textField.font = .systemFont(ofSize: 16)
@@ -74,10 +77,10 @@ class LogInViewController: UIViewController {
 	}()
 
 	let contentView: UIView = {
-		   let view = UIView()
-		   view.translatesAutoresizingMaskIntoConstraints = false
-		   return view
-	   }()
+		let view = UIView()
+		view.translatesAutoresizingMaskIntoConstraints = false
+		return view
+	}()
 
 	let logoImageView: UIImageView = {
 		let imageView = UIImageView()
@@ -91,6 +94,21 @@ class LogInViewController: UIViewController {
 		self?.loginButtonTapped()
 	}
 
+	private lazy var guessPasswordButton = CustomButton(title: "Guess Password") { [weak self] in
+		self?.guessButtonTapped()
+	}
+
+	let bruteForceIndicator: UIActivityIndicatorView = {
+		let activityIndicatorView = UIActivityIndicatorView(style: .medium)
+		activityIndicatorView.hidesWhenStopped = true
+		activityIndicatorView.style = .medium
+		activityIndicatorView.color = .systemBlue
+		activityIndicatorView.translatesAutoresizingMaskIntoConstraints = false
+		return activityIndicatorView
+	}()
+
+
+	//MARK: Lifecycle
 	override func viewDidLoad() {
 		super.viewDidLoad()
 
@@ -110,13 +128,17 @@ class LogInViewController: UIViewController {
 		removeKeyboardObservers()
 	}
 
+	//MARK: UI Setup
 	func viewSetup() {
 		navigationController?.navigationBar.isHidden = true
 		view.backgroundColor = .white
+		guessPasswordButton.isUserInteractionEnabled = true
 
 		contentView.addSubview(logoImageView)
 		contentView.addSubview(credentialsStackView)
 		contentView.addSubview(loginButton)
+		contentView.addSubview(bruteForceIndicator)
+		contentView.addSubview(guessPasswordButton)
 
 		scrollView.addSubview(contentView)
 		view.addSubview(scrollView)
@@ -164,11 +186,21 @@ class LogInViewController: UIViewController {
 			scrollView.topAnchor.constraint(equalTo: view.topAnchor),
 			scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
 
+			bruteForceIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+			bruteForceIndicator.bottomAnchor.constraint(equalTo: credentialsStackView.topAnchor, constant: -16),
+			bruteForceIndicator.heightAnchor.constraint(equalToConstant: 50),
+			bruteForceIndicator.widthAnchor.constraint(equalToConstant: 50),
 
-			loginButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -20)
+			guessPasswordButton.leadingAnchor.constraint(equalTo: credentialsStackView.leadingAnchor),
+			guessPasswordButton.trailingAnchor.constraint(equalTo: credentialsStackView.trailingAnchor),
+			guessPasswordButton.topAnchor.constraint(equalTo: loginButton.bottomAnchor, constant: 16),
+			guessPasswordButton.heightAnchor.constraint(equalToConstant: 50),
+
+			guessPasswordButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -20),
 		])
 	}
 
+	//MARK: Keyboard management
 	private func setupKeyboardObservers() {
 		let notificationCenter = NotificationCenter.default
 
@@ -192,7 +224,6 @@ class LogInViewController: UIViewController {
 		notificationCenter.removeObserver(self)
 	}
 
-
 	@objc func willShowKeyboard(_ notification: NSNotification) {
 		let keyboardHeight = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue.height
 		scrollView.contentInset.bottom += keyboardHeight ?? 0.0
@@ -202,6 +233,7 @@ class LogInViewController: UIViewController {
 		scrollView.contentInset.bottom = 0.0
 	}
 
+	//MARK: User Interaction Methods
 	func loginButtonTapped() {
 		guard let login = usernameTextField.text, let password = passwordTextField.text, !login.isEmpty else {
 			showErrorAlert(message: "Введите логин/пароль!")
@@ -225,6 +257,61 @@ class LogInViewController: UIViewController {
 		alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
 		present(alert, animated: true, completion: nil)
 	}
+
+	func guessButtonTapped() {
+		bruteForceIndicator.startAnimating()
+		DispatchQueue.global(qos: .default).async {
+			let guess = self.bruteForce(passwordToUnlock: "1Venom365")
+
+			DispatchQueue.main.async {
+				self.bruteForceIndicator.stopAnimating()
+				self.bruteForceIndicator.isHidden = true
+				self.passwordTextField.isSecureTextEntry = false
+				self.passwordTextField.text = guess
+			}
+		}
+	}
+
+
+	//MARK: BruteForce
+	func bruteForce(passwordToUnlock: String) -> String {
+		let characters: [String] = String().printable.map { String($0) }
+
+		var password: String = ""
+
+		while password != passwordToUnlock { //
+			password = generateBruteForce(password, fromArray: characters)
+		}
+		return password
+	}
+
+	func generateBruteForce(_ string: String, fromArray array: [String]) -> String {
+		var str: String = string
+
+		if str.count <= 0 {
+			str.append(characterAt(index: 0, array))
+		}
+		else {
+			str.replace(at: str.count - 1,
+						with: characterAt(index: (indexOf(character: str.last!, array) + 1) % array.count, array))
+
+			if indexOf(character: str.last!, array) == 0 {
+				str = String(generateBruteForce(String(str.dropLast()), fromArray: array)) + String(str.last!)
+			}
+		}
+
+		return str
+	}
+
+	func indexOf(character: Character, _ array: [String]) -> Int {
+		return array.firstIndex(of: String(character))!
+	}
+
+	func characterAt(index: Int, _ array: [String]) -> Character {
+		return index < array.count ? Character(array[index])
+		: Character("")
+	}
+
 }
 
 protocol LoginViewControllerDelegate {
@@ -237,5 +324,21 @@ struct LoginInspector: LoginViewControllerDelegate {
 
 	func check(login: String, password: String) -> Bool {
 		Checker.shared.check(inputLogin: login, inputPassword: password)
+	}
+}
+
+extension String {
+
+	var digits:      String { return "0123456789" }
+	var lowercase:   String { return "abcdefghijklmnopqrstuvwxyz" }
+	var uppercase:   String { return "ABCDEFGHIJKLMNOPQRSTUVWXYZ" }
+	var punctuation: String { return "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~" }
+	var letters:     String { return lowercase + uppercase }
+	var printable:   String { return digits + letters + punctuation }
+
+	mutating func replace(at index: Int, with character: Character) {
+		var stringArray = Array(self)
+		stringArray[index] = character
+		self = String(stringArray)
 	}
 }
