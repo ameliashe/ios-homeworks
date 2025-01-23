@@ -20,7 +20,12 @@ class FeedViewController: UIViewController {
 		self?.navigateToPostViewController(post)
 	}
 
-	private lazy var checkGuessButton = CustomButton(title: "Check Guess") { [weak self] in
+	//Сделаем игру в угадывание слова ограниченной по времени.
+	private lazy var playGuessButton = CustomButton(title: "Play \"Guess the word\"!") { [weak self] in
+		self?.playButtonTapped()
+	}
+
+	private lazy var checkGuessButton = CustomButton(title: "CheckGuess") { [weak self] in
 		guard let guessText = self?.guessTextField.text, !guessText.isEmpty else { return }
 		self?.viewModel.checkWord(guessText)
 	}
@@ -29,13 +34,14 @@ class FeedViewController: UIViewController {
 		let field = TextField()
 		field.placeholder = "Guess..."
 		field.backgroundColor = .white
-		field.font = .systemFont(ofSize: .init(15), weight: .regular)
+		field.font = .systemFont(ofSize: 15, weight: .regular)
 		field.textColor = .black
 		field.layer.cornerRadius = 10
 		field.layer.borderWidth = 1
 		field.layer.borderColor = UIColor.black.cgColor
 		field.isUserInteractionEnabled = true
 		field.translatesAutoresizingMaskIntoConstraints = false
+		field.isHidden = true
 		return field
 	}()
 
@@ -43,8 +49,9 @@ class FeedViewController: UIViewController {
 		let label = UILabel()
 		label.textColor = .black
 		label.text = "Result"
-		label.font = .systemFont(ofSize: .init(16), weight: .regular)
+		label.font = .systemFont(ofSize: 16, weight: .regular)
 		label.translatesAutoresizingMaskIntoConstraints = false
+		label.isHidden = true
 		return label
 	}()
 
@@ -63,6 +70,17 @@ class FeedViewController: UIViewController {
 		return stackView
 	}()
 
+	private let timerLabel: UILabel = {
+		let label = UILabel()
+		label.textColor = .red
+		label.text = ""
+		label.font = .systemFont(ofSize: 16, weight: .bold)
+		label.textAlignment = .center
+		label.translatesAutoresizingMaskIntoConstraints = false
+		label.isHidden = true
+		return label
+	}()
+
 	//MARK: Model
 	var viewModel: FeedViewModel
 
@@ -76,7 +94,7 @@ class FeedViewController: UIViewController {
 		fatalError("init(coder:) has not been implemented")
 	}
 
-	//Lifecycle
+	//MARK: Lifecycle
 	override func viewDidLoad() {
 		super.viewDidLoad()
 
@@ -84,6 +102,7 @@ class FeedViewController: UIViewController {
 			self?.resultLabel.text = text
 			self?.resultLabel.textColor = color
 		}
+		checkGuessButton.isHidden = true
 
 		addSubviews()
 		configureStackView()
@@ -95,6 +114,8 @@ class FeedViewController: UIViewController {
 		view.addSubview(guessTextField)
 		view.addSubview(checkGuessButton)
 		view.addSubview(resultLabel)
+		view.addSubview(playGuessButton)
+		view.addSubview(timerLabel)
 	}
 
 	func configureStackView() {
@@ -117,12 +138,49 @@ class FeedViewController: UIViewController {
 			checkGuessButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
 			checkGuessButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
 			checkGuessButton.heightAnchor.constraint(equalToConstant: 50),
+
+			playGuessButton.topAnchor.constraint(equalTo: guessTextField.bottomAnchor, constant: 16),
+			playGuessButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+			playGuessButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+			playGuessButton.heightAnchor.constraint(equalToConstant: 50),
+
+			timerLabel.bottomAnchor.constraint(equalTo: guessTextField.topAnchor, constant: -16),
+			timerLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+
 		])
 	}
 
+	//MARK: User Interaction Methods
 	private func navigateToPostViewController(_ post: FeedModel.Post) {
 		let postVC = PostViewController()
 		postVC.postTitle = post.title
 		navigationController?.pushViewController(postVC, animated: true)
+	}
+
+	func playButtonTapped() {
+		toggleViews()
+
+		var timeRemaining = 30
+		self.timerLabel.text = "Time remaining: \(timeRemaining)"
+
+		Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] timer in
+			guard let self = self else { return }
+				timeRemaining -= 1
+				self.timerLabel.text = timeRemaining <= 0 ? "Time's up!" : "Time remaining: \(timeRemaining)"
+			if timeRemaining == 0 {
+				timer.invalidate()
+				toggleViews()
+			}
+		}
+	}
+
+	func toggleViews() {
+		self.guessTextField.isHidden.toggle()
+		self.resultLabel.isHidden.toggle()
+		self.checkGuessButton.isHidden.toggle()
+		self.playGuessButton.isHidden.toggle()
+		self.timerLabel.isHidden.toggle()
+		self.postButton1.isHidden.toggle()
+		self.postButton2.isHidden.toggle()
 	}
 }
