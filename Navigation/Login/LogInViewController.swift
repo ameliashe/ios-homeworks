@@ -236,20 +236,30 @@ class LogInViewController: UIViewController {
 	//MARK: User Interaction Methods
 	func loginButtonTapped() {
 		guard let login = usernameTextField.text, let password = passwordTextField.text, !login.isEmpty else {
-			showErrorAlert(message: "Введите логин/пароль!")
-			return
+			preconditionFailure("Логин и пароль не должны быть пустыми.")
 		}
-		guard loginDelegate?.check(login: login, password: password) == true else {
-			showErrorAlert(message: "Неверный логин/пароль!")
-			return
-		}
-		if let user = activeUserService.getUser(login: login) {
+		do {
+			let user = try fetchUser(login: login, password: password)
 			let profileViewController = ProfileViewController()
 			profileViewController.user = user
 			navigationController?.pushViewController(profileViewController, animated: true)
-		} else {
-			showErrorAlert(message: "Неверный логин!")
+		} catch AppError.invalidCredentials {
+			showErrorAlert(message: "Неверный логин/пароль!")
+		} catch AppError.userNotFound {
+			showErrorAlert(message: "Пользователь не найден!")
+		} catch {
+			showErrorAlert(message: "Произошла неизвестная ошибка")
 		}
+	}
+
+	func fetchUser(login: String, password: String) throws -> User {
+		guard loginDelegate?.check(login: login, password: password) == true else {
+			throw AppError.invalidCredentials
+		}
+		guard let user = activeUserService.getUser(login: login) else {
+			throw AppError.userNotFound
+		}
+		return user
 	}
 
 	func showErrorAlert(message: String) {
@@ -261,28 +271,47 @@ class LogInViewController: UIViewController {
 	func guessButtonTapped() {
 		bruteForceIndicator.startAnimating()
 		DispatchQueue.global(qos: .default).async {
-			let guess = self.bruteForce(passwordToUnlock: "1Venom365")
+			let result = self.bruteForce(passwordToUnlock: "1Venom365")
 
 			DispatchQueue.main.async {
 				self.bruteForceIndicator.stopAnimating()
 				self.bruteForceIndicator.isHidden = true
-				self.passwordTextField.isSecureTextEntry = false
-				self.passwordTextField.text = guess
+
+				switch result {
+				case .success(let password):
+					self.passwordTextField.isSecureTextEntry = false
+					self.passwordTextField.text = password
+				case .failure(let error):
+					self.handleBruteForceError(error)
+				}
 			}
 		}
 	}
 
-
 	//MARK: BruteForce
-	func bruteForce(passwordToUnlock: String) -> String {
+	func bruteForce(passwordToUnlock: String) -> Result<String, AppError> {
 		let characters: [String] = String().printable.map { String($0) }
-
 		var password: String = ""
+		let maxAttempts = 1000000
+		var attempts = 0
 
-		while password != passwordToUnlock { //
+		while password != passwordToUnlock {
+			if attempts >= maxAttempts {
+				return .failure(.passwordGuessingFailed)
+			}
 			password = generateBruteForce(password, fromArray: characters)
+			attempts += 1
 		}
-		return password
+		return .success(password)
+	}
+
+	func handleBruteForceError(_ error: AppError) {
+		switch error {
+		case .passwordGuessingFailed:
+			showErrorAlert(message: "Не удалось подобрать пароль: превышено количество попыток.")
+		default:
+			showErrorAlert(message: "Произошла неизвестная ошибка.")
+		}
 	}
 
 	func generateBruteForce(_ string: String, fromArray array: [String]) -> String {
