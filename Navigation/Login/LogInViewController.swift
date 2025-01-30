@@ -236,7 +236,8 @@ class LogInViewController: UIViewController {
 	//MARK: User Interaction Methods
 	func loginButtonTapped() {
 		guard let login = usernameTextField.text, let password = passwordTextField.text, !login.isEmpty else {
-			preconditionFailure("Логин и пароль не должны быть пустыми.")
+			showErrorAlert(message:"Логин и пароль не должны быть пустыми.")
+			return
 		}
 		do {
 			let user = try fetchUser(login: login, password: password)
