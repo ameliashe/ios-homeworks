@@ -31,13 +31,15 @@ class FeedViewController: UIViewController {
 	}
 
 	private lazy var showPlayerButton = CustomButton(title: "Music Player") { [weak self] in
-		guard let post = self?.viewModel.getPost(at: 1) else { return }
 		self?.navigateToPlayerVC()
 	}
 
 	private lazy var showVideosButton = CustomButton(title: "Videos") { [weak self] in
-		guard let post = self?.viewModel.getPost(at: 1) else { return }
 		self?.navigateToVideosVC()
+	}
+
+	private lazy var showAudioRecorderButton = CustomButton(title: "Audio Recorder") { [weak self] in
+		self?.navigateToAudioRecVC()
 	}
 
 	private let guessTextField: TextField = {
@@ -128,6 +130,7 @@ class FeedViewController: UIViewController {
 		view.addSubview(timerLabel)
 		view.addSubview(showPlayerButton)
 		view.addSubview(showVideosButton)
+		view.addSubview(showAudioRecorderButton)
 	}
 
 	func configureStackView() {
@@ -174,6 +177,11 @@ class FeedViewController: UIViewController {
 			showVideosButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
 			showVideosButton.heightAnchor.constraint(equalToConstant: 50),
 
+			showAudioRecorderButton.topAnchor.constraint(equalTo: showVideosButton.bottomAnchor, constant: 10),
+			showAudioRecorderButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+			showAudioRecorderButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+			showAudioRecorderButton.heightAnchor.constraint(equalToConstant: 50),
+
 		])
 	}
 
@@ -192,6 +200,11 @@ class FeedViewController: UIViewController {
 	private func navigateToVideosVC() {
 		let videosVC = VideosViewController()
 		navigationController?.pushViewController(videosVC, animated: true)
+	}
+
+	private func navigateToAudioRecVC() {
+		let audioRecVC = AudioRecViewController()
+		navigationController?.pushViewController(audioRecVC, animated: true)
 	}
 
 	func playButtonTapped() {
