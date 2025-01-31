@@ -30,6 +30,18 @@ class FeedViewController: UIViewController {
 		self?.viewModel.checkWord(guessText)
 	}
 
+	private lazy var showPlayerButton = CustomButton(title: "Music Player") { [weak self] in
+		self?.navigateToPlayerVC()
+	}
+
+	private lazy var showVideosButton = CustomButton(title: "Videos") { [weak self] in
+		self?.navigateToVideosVC()
+	}
+
+	private lazy var showAudioRecorderButton = CustomButton(title: "Audio Recorder") { [weak self] in
+		self?.navigateToAudioRecVC()
+	}
+
 	private let guessTextField: TextField = {
 		let field = TextField()
 		field.placeholder = "Guess..."
@@ -116,6 +128,9 @@ class FeedViewController: UIViewController {
 		view.addSubview(resultLabel)
 		view.addSubview(playGuessButton)
 		view.addSubview(timerLabel)
+		view.addSubview(showPlayerButton)
+		view.addSubview(showVideosButton)
+		view.addSubview(showAudioRecorderButton)
 	}
 
 	func configureStackView() {
@@ -130,6 +145,7 @@ class FeedViewController: UIViewController {
 			guessTextField.trailingAnchor.constraint(equalTo: view.centerXAnchor, constant: 16),
 			guessTextField.heightAnchor.constraint(equalToConstant: 40),
 
+
 			resultLabel.leadingAnchor.constraint(equalTo: guessTextField.trailingAnchor, constant: 16),
 			resultLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
 			resultLabel.centerYAnchor.constraint(equalTo: guessTextField.centerYAnchor),
@@ -139,13 +155,32 @@ class FeedViewController: UIViewController {
 			checkGuessButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
 			checkGuessButton.heightAnchor.constraint(equalToConstant: 50),
 
+
 			playGuessButton.topAnchor.constraint(equalTo: guessTextField.bottomAnchor, constant: 16),
 			playGuessButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
 			playGuessButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
 			playGuessButton.heightAnchor.constraint(equalToConstant: 50),
 
+
 			timerLabel.bottomAnchor.constraint(equalTo: guessTextField.topAnchor, constant: -16),
 			timerLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+
+
+			showPlayerButton.topAnchor.constraint(equalTo: postButtonStackView.bottomAnchor, constant: 70),
+			showPlayerButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+			showPlayerButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+			showPlayerButton.heightAnchor.constraint(equalToConstant: 50),
+
+
+			showVideosButton.topAnchor.constraint(equalTo: showPlayerButton.bottomAnchor, constant: 10),
+			showVideosButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+			showVideosButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+			showVideosButton.heightAnchor.constraint(equalToConstant: 50),
+
+			showAudioRecorderButton.topAnchor.constraint(equalTo: showVideosButton.bottomAnchor, constant: 10),
+			showAudioRecorderButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+			showAudioRecorderButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+			showAudioRecorderButton.heightAnchor.constraint(equalToConstant: 50),
 
 		])
 	}
@@ -155,6 +190,21 @@ class FeedViewController: UIViewController {
 		let postVC = PostViewController()
 		postVC.postTitle = post.title
 		navigationController?.pushViewController(postVC, animated: true)
+	}
+
+	private func navigateToPlayerVC() {
+		let playerVC = PlayerViewController()
+		navigationController?.pushViewController(playerVC, animated: true)
+	}
+
+	private func navigateToVideosVC() {
+		let videosVC = VideosViewController()
+		navigationController?.pushViewController(videosVC, animated: true)
+	}
+
+	private func navigateToAudioRecVC() {
+		let audioRecVC = AudioRecViewController()
+		navigationController?.pushViewController(audioRecVC, animated: true)
 	}
 
 	func playButtonTapped() {
