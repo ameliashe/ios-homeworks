@@ -48,19 +48,19 @@ class VideosViewController: UIViewController {
 
 extension VideosViewController: UITableViewDataSource, UITableViewDelegate {
 	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		return videos.count
+		return Videos.videoList.count
 	}
 	
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		guard let cell = tableView.dequeueReusableCell(withIdentifier: videoCellID, for: indexPath) as? VideosTableViewCell else {
 			fatalError("Could not dequeue VideosTableViewCell")
 		}
-		cell.update(videos[indexPath.row])
+		cell.update(Videos.videoList[indexPath.row])
 		return cell
 	}
 
 	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-		guard let videoURL = URL(string: videos[indexPath.row]) else {
+		guard let videoURL = URL(string: Videos.videoList[indexPath.row]) else {
 			return
 		}
 		let player = AVPlayer(url: videoURL)
