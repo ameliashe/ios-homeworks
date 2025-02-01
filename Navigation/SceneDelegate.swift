@@ -15,6 +15,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 	func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
 		guard let scene = (scene as? UIWindowScene) else { return }
 
+		let configurations: [AppConfiguration] = [
+			.people(URL(string: "https://swapi.dev/api/people/5")!),
+			.films(URL(string: "https://swapi.dev/api/films/4")!),
+			.planets(URL(string: "https://swapi.dev/api/planets/14")!)
+		]
+		let appConfiguration = configurations.randomElement()!
+		NetworkManager.request(for: appConfiguration)
+
 		let window = UIWindow(windowScene: scene)
 
 		let navigationController = UINavigationController()
