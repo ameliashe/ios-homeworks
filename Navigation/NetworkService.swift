@@ -1,5 +1,5 @@
 //
-//  SerializationNetworkService.swift
+//  NetworkService.swift
 //  Navigation
 //
 //  Created by Amelia Romanova on 2/1/25.
@@ -17,7 +17,6 @@ class NetworkService {
 	static func request(from url: URL, completion: @escaping (Result<Data, RequestError>) -> Void) {
 
 		let session = URLSession.shared
-
 		let task = session.dataTask(with: url) { data, response, error in
 			if error != nil {
 				completion(.failure(.error(error!)))
