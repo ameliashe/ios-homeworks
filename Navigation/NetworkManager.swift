@@ -14,7 +14,6 @@ enum AppConfiguration {
 }
 
 struct NetworkManager {
-	
 
 	static func request(for configuration: AppConfiguration) {
 
