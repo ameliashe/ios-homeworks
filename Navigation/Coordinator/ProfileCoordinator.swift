@@ -19,8 +19,8 @@ class ProfileCoordinator: Coordinator {
 
 	func start() {
 		let logInVC = LogInViewController()
-		let myLoginFactory = MyLoginFactory()
-		logInVC.loginDelegate = myLoginFactory.makeLoginInspector()
+//		let myLoginFactory = MyLoginFactory()
+//		logInVC.loginDelegate = myLoginFactory.makeLoginInspector()
 
 		navigationController.pushViewController(logInVC, animated: false)
 	}
