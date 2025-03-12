@@ -10,14 +10,7 @@ import UIKit
 class LogInViewController: UIViewController {
 
 	//MARK: LoginService
-
-#if DEBUG
-	let activeUserService = TestUserService()
-#else
-	let activeUserService = CurrentUserService()
-#endif
-
-	var loginDelegate: LoginViewControllerDelegate? = nil
+	private var loginDelegate: LoginViewControllerDelegate? = LoginInspector()
 
 	//MARK: UI Elements
 	lazy var credentialsStackView: UIStackView = {
@@ -26,7 +19,6 @@ class LogInViewController: UIViewController {
 		stackView.spacing = 0
 		stackView.distribution = .fill
 		stackView.layer.cornerRadius = 10
-		stackView.layer.borderColor = UIColor.black.cgColor
 		stackView.layer.borderWidth = 0.5
 		stackView.layer.borderColor = UIColor.lightGray.cgColor
 		stackView.layer.masksToBounds = true
@@ -38,7 +30,9 @@ class LogInViewController: UIViewController {
 		let textField = TextField()
 		textField.placeholder = "Email or phone"
 		textField.backgroundColor = .systemGray6
-		textField.text = "amelia"
+#if DEBUG
+		textField.text = "test@test.com"
+#endif
 		textField.textColor = .black
 		textField.font = .systemFont(ofSize: 16)
 		textField.tintColor = UIColor(named: "VKColor")
@@ -50,7 +44,9 @@ class LogInViewController: UIViewController {
 	private lazy var passwordTextField: TextField = {
 		let textField = TextField()
 		textField.placeholder = "Password"
-		//		textField.text = "123123"
+#if DEBUG
+		textField.text = "123456"
+#endif
 		textField.backgroundColor = .systemGray6
 		textField.textColor = .black
 		textField.font = .systemFont(ofSize: 16)
@@ -91,14 +87,14 @@ class LogInViewController: UIViewController {
 	}()
 
 	private lazy var loginButton = CustomButton(title: "Log In") { [weak self] in
-		self?.loginButtonTapped()
+		self?.logInButtonTapped()
 	}
 
-	private lazy var guessPasswordButton = CustomButton(title: "Guess Password") { [weak self] in
-		self?.guessButtonTapped()
+	private lazy var signUpButton = CustomButton(title: "Sign Up") { [weak self] in
+		self?.signUpButtonTapped()
 	}
 
-	let bruteForceIndicator: UIActivityIndicatorView = {
+	let credentialsIndicator: UIActivityIndicatorView = {
 		let activityIndicatorView = UIActivityIndicatorView(style: .medium)
 		activityIndicatorView.hidesWhenStopped = true
 		activityIndicatorView.style = .medium
@@ -111,9 +107,13 @@ class LogInViewController: UIViewController {
 	//MARK: Lifecycle
 	override func viewDidLoad() {
 		super.viewDidLoad()
+		if loginDelegate?.isAuthorized() == true {
+			navigateToProfile()
+		}
 
 		viewSetup()
 		layoutConstraintsSetup()
+
 	}
 
 	override func viewWillAppear(_ animated: Bool) {
@@ -132,13 +132,12 @@ class LogInViewController: UIViewController {
 	func viewSetup() {
 		navigationController?.navigationBar.isHidden = true
 		view.backgroundColor = .white
-		guessPasswordButton.isUserInteractionEnabled = true
 
 		contentView.addSubview(logoImageView)
 		contentView.addSubview(credentialsStackView)
 		contentView.addSubview(loginButton)
-		contentView.addSubview(bruteForceIndicator)
-		contentView.addSubview(guessPasswordButton)
+		contentView.addSubview(credentialsIndicator)
+		contentView.addSubview(signUpButton)
 
 		scrollView.addSubview(contentView)
 		view.addSubview(scrollView)
@@ -186,17 +185,17 @@ class LogInViewController: UIViewController {
 			scrollView.topAnchor.constraint(equalTo: view.topAnchor),
 			scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
 
-			bruteForceIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-			bruteForceIndicator.bottomAnchor.constraint(equalTo: credentialsStackView.topAnchor, constant: -16),
-			bruteForceIndicator.heightAnchor.constraint(equalToConstant: 50),
-			bruteForceIndicator.widthAnchor.constraint(equalToConstant: 50),
+			credentialsIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+			credentialsIndicator.bottomAnchor.constraint(equalTo: credentialsStackView.centerYAnchor),
+			credentialsIndicator.heightAnchor.constraint(equalToConstant: 150),
+			credentialsIndicator.widthAnchor.constraint(equalToConstant: 150),
 
-			guessPasswordButton.leadingAnchor.constraint(equalTo: credentialsStackView.leadingAnchor),
-			guessPasswordButton.trailingAnchor.constraint(equalTo: credentialsStackView.trailingAnchor),
-			guessPasswordButton.topAnchor.constraint(equalTo: loginButton.bottomAnchor, constant: 16),
-			guessPasswordButton.heightAnchor.constraint(equalToConstant: 50),
+			signUpButton.leadingAnchor.constraint(equalTo: credentialsStackView.leadingAnchor),
+			signUpButton.trailingAnchor.constraint(equalTo: credentialsStackView.trailingAnchor),
+			signUpButton.topAnchor.constraint(equalTo: loginButton.bottomAnchor, constant: 16),
+			signUpButton.heightAnchor.constraint(equalToConstant: 50),
 
-			guessPasswordButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -20),
+			signUpButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -20),
 		])
 	}
 
@@ -234,33 +233,74 @@ class LogInViewController: UIViewController {
 	}
 
 	//MARK: User Interaction Methods
-	func loginButtonTapped() {
-		guard let login = usernameTextField.text, let password = passwordTextField.text, !login.isEmpty else {
+	func logInButtonTapped() {
+		guard let email = usernameTextField.text, let password = passwordTextField.text, !email.isEmpty, !password.isEmpty else {
 			showErrorAlert(message:"Логин и пароль не должны быть пустыми.")
 			return
 		}
-		do {
-			let user = try fetchUser(login: login, password: password)
-			let profileViewController = ProfileViewController()
-			profileViewController.user = user
-			navigationController?.pushViewController(profileViewController, animated: true)
-		} catch AppError.invalidCredentials {
-			showErrorAlert(message: "Неверный логин/пароль!")
-		} catch AppError.userNotFound {
-			showErrorAlert(message: "Пользователь не найден!")
-		} catch {
-			showErrorAlert(message: "Произошла неизвестная ошибка")
+
+		loginButton.isEnabled = false
+		signUpButton.isEnabled = false
+		credentialsIndicator.startAnimating()
+
+		loginDelegate?.checkCredentials(email: email, password: password) { [weak self] result in
+
+			DispatchQueue.main.async {
+				self?.credentialsIndicator.stopAnimating()
+				self?.loginButton.isEnabled = true
+				self?.signUpButton.isEnabled = true
+
+				switch result {
+				case .success():
+					self?.navigateToProfile()
+				case .failure(let error):
+					self?.handleAuthError(error)
+				}
+			}
 		}
 	}
 
-	func fetchUser(login: String, password: String) throws -> User {
-		guard loginDelegate?.check(login: login, password: password) == true else {
-			throw AppError.invalidCredentials
+	func signUpButtonTapped() {
+		guard let email = usernameTextField.text, let password = passwordTextField.text, !email.isEmpty, !password.isEmpty else {
+			showErrorAlert(message:"Логин и пароль не должны быть пустыми.")
+			return
 		}
-		guard let user = activeUserService.getUser(login: login) else {
-			throw AppError.userNotFound
+		loginButton.isEnabled = false
+		signUpButton.isEnabled = false
+		credentialsIndicator.startAnimating()
+
+		loginDelegate?.signUp(email: email, password: password) { [weak self] result in
+			DispatchQueue.main.async {
+				self?.credentialsIndicator.stopAnimating()
+				self?.loginButton.isEnabled = true
+				self?.signUpButton.isEnabled = true
+
+				switch result {
+				case .success():
+					self?.navigateToProfile()
+				case .failure(let error):
+					self?.handleAuthError(error)
+				}
+			}
 		}
-		return user
+	}
+
+	func navigateToProfile() {
+		let profileVC = ProfileViewController()
+		navigationController?.pushViewController(profileVC, animated: true)
+	}
+
+	func handleAuthError(_ error: AuthError) {
+		switch error {
+		case .userNotFound:
+			showErrorAlert(message: "Пользователь не найден. Зарегистрируйтесь.")
+		case .wrongPassword:
+			showErrorAlert(message: "Неверный пароль.")
+		case .emailAlreadyInUse:
+			showErrorAlert(message: "Этот email уже зарегистрирован.")
+		case .unknownError:
+			showErrorAlert(message: "Произошла неизвестная ошибка. Попробуйте снова.")
+		}
 	}
 
 	func showErrorAlert(message: String) {
@@ -268,107 +308,30 @@ class LogInViewController: UIViewController {
 		alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
 		present(alert, animated: true, completion: nil)
 	}
-
-	func guessButtonTapped() {
-		bruteForceIndicator.startAnimating()
-		DispatchQueue.global(qos: .default).async {
-			let result = self.bruteForce(passwordToUnlock: "1Venom365")
-
-			DispatchQueue.main.async {
-				self.bruteForceIndicator.stopAnimating()
-				self.bruteForceIndicator.isHidden = true
-
-				switch result {
-				case .success(let password):
-					self.passwordTextField.isSecureTextEntry = false
-					self.passwordTextField.text = password
-				case .failure(let error):
-					self.handleBruteForceError(error)
-				}
-			}
-		}
-	}
-
-	//MARK: BruteForce
-	func bruteForce(passwordToUnlock: String) -> Result<String, AppError> {
-		let characters: [String] = String().printable.map { String($0) }
-		var password: String = ""
-		let maxAttempts = 1000000
-		var attempts = 0
-
-		while password != passwordToUnlock {
-			if attempts >= maxAttempts {
-				return .failure(.passwordGuessingFailed)
-			}
-			password = generateBruteForce(password, fromArray: characters)
-			attempts += 1
-		}
-		return .success(password)
-	}
-
-	func handleBruteForceError(_ error: AppError) {
-		switch error {
-		case .passwordGuessingFailed:
-			showErrorAlert(message: "Не удалось подобрать пароль: превышено количество попыток.")
-		default:
-			showErrorAlert(message: "Произошла неизвестная ошибка.")
-		}
-	}
-
-	func generateBruteForce(_ string: String, fromArray array: [String]) -> String {
-		var str: String = string
-
-		if str.count <= 0 {
-			str.append(characterAt(index: 0, array))
-		}
-		else {
-			str.replace(at: str.count - 1,
-						with: characterAt(index: (indexOf(character: str.last!, array) + 1) % array.count, array))
-
-			if indexOf(character: str.last!, array) == 0 {
-				str = String(generateBruteForce(String(str.dropLast()), fromArray: array)) + String(str.last!)
-			}
-		}
-
-		return str
-	}
-
-	func indexOf(character: Character, _ array: [String]) -> Int {
-		return array.firstIndex(of: String(character))!
-	}
-
-	func characterAt(index: Int, _ array: [String]) -> Character {
-		return index < array.count ? Character(array[index])
-		: Character("")
-	}
-
 }
 
-protocol LoginViewControllerDelegate {
+protocol LoginViewControllerDelegate: AnyObject {
 
-	func check(login: String, password: String) -> Bool
+	func checkCredentials(email: String, password: String, completion: @escaping (Result<Void, AuthError>) -> Void)
 
+	func signUp(email: String, password: String, completion: @escaping (Result<Void, AuthError>) -> Void)
+
+	func isAuthorized() -> Bool
 }
 
-struct LoginInspector: LoginViewControllerDelegate {
+class LoginInspector: LoginViewControllerDelegate {
 
-	func check(login: String, password: String) -> Bool {
-		Checker.shared.check(inputLogin: login, inputPassword: password)
+	private let checkerService: CheckerServiceProtocol = CheckerService()
+
+	func checkCredentials(email: String, password: String, completion: @escaping (Result<Void, AuthError>) -> Void) {
+		checkerService.checkCredentials(email: email, password: password, completion: completion)
 	}
-}
 
-extension String {
-
-	var digits:      String { return "0123456789" }
-	var lowercase:   String { return "abcdefghijklmnopqrstuvwxyz" }
-	var uppercase:   String { return "ABCDEFGHIJKLMNOPQRSTUVWXYZ" }
-	var punctuation: String { return "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~" }
-	var letters:     String { return lowercase + uppercase }
-	var printable:   String { return digits + letters + punctuation }
-
-	mutating func replace(at index: Int, with character: Character) {
-		var stringArray = Array(self)
-		stringArray[index] = character
-		self = String(stringArray)
+	func signUp(email: String, password: String, completion: @escaping (Result<Void, AuthError>) -> Void) {
+		checkerService.signUp(email: email, password: password, completion: completion)
 	}
+
+	func isAuthorized() -> Bool {
+			return checkerService.isAuthorized()
+		}
 }
