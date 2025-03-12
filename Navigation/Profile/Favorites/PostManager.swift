@@ -12,10 +12,6 @@ import CoreData
 final class PostManager {
 	static let shared = PostManager()
 
-	//	var context: NSManagedObjectContext {
-	//		return persistentContainer.viewContext
-	//	}
-
 	lazy var persistentContainer: NSPersistentContainer = {
 		let container = NSPersistentContainer(name: "FavoritePost")
 		container.loadPersistentStores(completionHandler: { (storeDescription, error) in
