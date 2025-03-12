@@ -56,7 +56,6 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
-				Profile/Post.swift,
 			);
 			target = CE5480F52CBC56900082AC64 /* Navigation */;
 		};

@@ -10,7 +10,10 @@ import StorageService
 
 class ProfileViewController: UIViewController {
 
+	//MARK: Properties
+	var isShowingFavoritePosts: Bool = false
 	var user: User?
+	var displayedPosts: [Post] = posts
 
 	private enum HeaderFooterReuseID: String {
 		case base = "ProfileHeaderView_ID"
@@ -21,9 +24,11 @@ class ProfileViewController: UIViewController {
 		case photos = "PhotosTableViewCell_ID"
 	}
 
+
+	//MARK: UI elements
 	var profileHeaderView: ProfileHeaderView?
 
-	lazy private var postsTableView: UITableView = {
+	lazy private var displayedPostsTableView: UITableView = {
 		let tableView = UITableView(frame: .zero, style: .grouped)
 		tableView.translatesAutoresizingMaskIntoConstraints = false
 
@@ -47,6 +52,8 @@ class ProfileViewController: UIViewController {
 		return button
 	}()
 
+
+	//MARK: Lifecycle
 	override func viewDidLoad() {
 		super.viewDidLoad()
 
@@ -54,11 +61,18 @@ class ProfileViewController: UIViewController {
 		setupView()
 		setupConstraints()
 		setupTableView()
-		setupCloseButton ()
+		setupCloseButton()
+		setupGesture()
 	}
 
+	override func viewWillAppear(_ animated: Bool) {
+		super.viewWillAppear(true)
+		loadTable()
+	}
+
+	//MARK: Layout
 	func addSubviews() {
-		view.addSubview(postsTableView)
+		view.addSubview(displayedPostsTableView)
 		view.addSubview(overlayView)
 		view.addSubview(closeButton)
 	}
@@ -73,27 +87,27 @@ class ProfileViewController: UIViewController {
 	}
 
 	func setupTableView() {
-		postsTableView.rowHeight = UITableView.automaticDimension
-		postsTableView.estimatedRowHeight = 200
-		postsTableView.tableFooterView = UIView()
-		postsTableView.contentInsetAdjustmentBehavior = .never
+		displayedPostsTableView.rowHeight = UITableView.automaticDimension
+		displayedPostsTableView.estimatedRowHeight = 200
+		displayedPostsTableView.tableFooterView = UIView()
+		displayedPostsTableView.contentInsetAdjustmentBehavior = .never
 
-		postsTableView.register(ProfileHeaderView.self, forHeaderFooterViewReuseIdentifier: HeaderFooterReuseID.base.rawValue)
+		displayedPostsTableView.register(ProfileHeaderView.self, forHeaderFooterViewReuseIdentifier: HeaderFooterReuseID.base.rawValue)
 
-		postsTableView.register(CustomPostCell.self, forCellReuseIdentifier: CellReuseID.base.rawValue)
+		displayedPostsTableView.register(CustomPostCell.self, forCellReuseIdentifier: CellReuseID.base.rawValue)
 
-		postsTableView.register(PhotosTableViewCell.self, forCellReuseIdentifier: CellReuseID.photos.rawValue)
+		displayedPostsTableView.register(PhotosTableViewCell.self, forCellReuseIdentifier: CellReuseID.photos.rawValue)
 
-		postsTableView.delegate = self
-		postsTableView.dataSource = self
+		displayedPostsTableView.delegate = self
+		displayedPostsTableView.dataSource = self
 	}
 
 	func setupConstraints() {
 		NSLayoutConstraint.activate([
-			postsTableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-			postsTableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-			postsTableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-			postsTableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+			displayedPostsTableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+			displayedPostsTableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+			displayedPostsTableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+			displayedPostsTableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
 
 			overlayView.topAnchor.constraint(equalTo: view.topAnchor),
 			overlayView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -150,6 +164,15 @@ class ProfileViewController: UIViewController {
 		})
 	}
 
+	func loadTable() {
+		if isShowingFavoritePosts {
+			displayedPosts = PostManager.shared.fetchPosts()
+			displayedPostsTableView.reloadData()
+		}
+	}
+
+
+	//MARK: User Interaction
 	@objc private func closeButtonTapped() {
 		guard let avatarCopy = view.viewWithTag(999) as? UIImageView else { return }
 
@@ -178,12 +201,36 @@ class ProfileViewController: UIViewController {
 			avatar.isHidden = false
 		})
 	}
+
+
+	func setupGesture() {
+		let doubleTapGesture = UITapGestureRecognizer(target: self, action: #selector(doubleTapHandler))
+		doubleTapGesture.numberOfTapsRequired = 2
+		displayedPostsTableView.addGestureRecognizer(doubleTapGesture)
+	}
+
+	@objc private func doubleTapHandler(_ gesture: UITapGestureRecognizer) {
+		let location = gesture.location(in: displayedPostsTableView)
+		guard let indexPath = displayedPostsTableView.indexPathForRow(at: location), indexPath.section == 1 else {
+			return
+		}
+
+		let selectedPost = displayedPosts[indexPath.row]
+
+		if PostManager.shared.isPostSaved(selectedPost) {
+			PostManager.shared.deletePost(selectedPost)
+		} else {
+			PostManager.shared.savePost(selectedPost)
+		}
+		loadTable()
+	}
+
 }
 
 extension ProfileViewController: UITableViewDataSource, UITableViewDelegate {
 
 	func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-		if section == 0 {
+		if section == 0 && !isShowingFavoritePosts {
 			guard let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: HeaderFooterReuseID.base.rawValue) as? ProfileHeaderView else {
 				return nil
 			}
@@ -205,13 +252,13 @@ extension ProfileViewController: UITableViewDataSource, UITableViewDelegate {
 
 	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		if section == 0 {
-			return 1
+			return isShowingFavoritePosts ? 0 : 1
 		}
-		return posts.count
+		return displayedPosts.count
 	}
 
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-		if indexPath.section == 0 {
+		if indexPath.section == 0 && !isShowingFavoritePosts {
 			guard let cell = tableView.dequeueReusableCell(withIdentifier: CellReuseID.photos.rawValue, for: indexPath) as? PhotosTableViewCell else {
 				fatalError("Could not dequeue PhotosTableViewCell")
 			}
@@ -220,12 +267,15 @@ extension ProfileViewController: UITableViewDataSource, UITableViewDelegate {
 		guard let cell = tableView.dequeueReusableCell(withIdentifier: CellReuseID.base.rawValue, for: indexPath) as? CustomPostCell else {
 			fatalError("Could not dequeue CustomPostCell")
 		}
-		cell.update(posts[indexPath.row])
+		guard !displayedPosts.isEmpty else {
+			return UITableViewCell()
+		}
+		cell.update(displayedPosts[indexPath.row])
 		return cell
 	}
 
 	func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-		return section == 1 ? 0 : 220
+		return isShowingFavoritePosts ? 0 : (section == 1 ? 0 : 220)
 	}
 
 	func numberOfSections(in tableView: UITableView) -> Int {
@@ -233,7 +283,7 @@ extension ProfileViewController: UITableViewDataSource, UITableViewDelegate {
 	}
 
 	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-		if indexPath.section == 0 {
+		if indexPath.section == 0  && !isShowingFavoritePosts {
 			let galleryVC = PhotoGalleryViewController()
 			navigationController?.pushViewController(galleryVC, animated: true)
 		} else {
