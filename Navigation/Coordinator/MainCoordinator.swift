@@ -20,6 +20,7 @@ class MainCoordinator: Coordinator {
 
 	var feedCoordinator: FeedCoordinator?
 	var profileCoordinator: ProfileCoordinator?
+	var favoritesCoordinator: FavoritesCoordinator?
 
 	init(navigationController: UINavigationController, tabBarController: UITabBarController) {
 		self.navigationController = navigationController
@@ -30,18 +31,22 @@ class MainCoordinator: Coordinator {
 
 		let feedNC = UINavigationController()
 		let profileNC = UINavigationController()
+		let favNC = UINavigationController()
 
 		feedCoordinator = FeedCoordinator(navigationController:	feedNC)
 		profileCoordinator = ProfileCoordinator(navigationController: profileNC)
+		favoritesCoordinator = FavoritesCoordinator(navigationController: favNC)
 
 		feedCoordinator?.start()
 		profileCoordinator?.start()
+		favoritesCoordinator?.start()
 
-		let controllers = [feedNC, profileNC]
+		let controllers = [feedNC, profileNC, favNC]
 		tabBarController.viewControllers = controllers
 
 		feedNC.tabBarItem = UITabBarItem(title: "Feed", image: UIImage(systemName: "list.bullet.rectangle"), tag: 0)
 		profileNC.tabBarItem = UITabBarItem(title: "Profile", image: UIImage(systemName: "person"), tag: 1)
+		favNC.tabBarItem = UITabBarItem(title: "Favorites", image: UIImage(systemName: "heart"), tag: 2)
 
 		tabBarController.selectedIndex = 0
 		tabBarController.tabBar.isTranslucent = false
