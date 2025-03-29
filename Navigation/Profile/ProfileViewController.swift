@@ -9,11 +9,12 @@ import UIKit
 import StorageService
 
 class ProfileViewController: UIViewController {
-
+	
 	//MARK: Properties
 	var isShowingFavoritePosts: Bool = false
 	var user: User?
-	var displayedPosts: [Post] = posts
+	var displayedPosts = [Post]()
+	private let viewModel = PostsViewModel()
 
 	private enum HeaderFooterReuseID: String {
 		case base = "ProfileHeaderView_ID"
@@ -63,6 +64,8 @@ class ProfileViewController: UIViewController {
 		setupTableView()
 		setupCloseButton()
 		setupGesture()
+		setupNavigationBar()
+		configureFavoritesTable()
 	}
 
 	override func viewWillAppear(_ animated: Bool) {
@@ -84,6 +87,14 @@ class ProfileViewController: UIViewController {
 		view.backgroundColor = .systemGreen
 #endif
 
+	}
+
+	func setupNavigationBar() {
+		if isShowingFavoritePosts {
+			navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(filterButtonTapped))
+			navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(clearButtonTapped))
+		} else {
+		}
 	}
 
 	func setupTableView() {
@@ -166,8 +177,18 @@ class ProfileViewController: UIViewController {
 
 	func loadTable() {
 		if isShowingFavoritePosts {
-			displayedPosts = PostManager.shared.fetchPosts()
-			displayedPostsTableView.reloadData()
+			viewModel.fetchPosts()
+		}
+	}
+
+	func configureFavoritesTable() {
+		if isShowingFavoritePosts {
+			viewModel.postsChangesBlock = { [weak self] in
+				self?.displayedPosts = self?.viewModel.posts ?? []
+				self?.displayedPostsTableView.reloadData()
+			}
+		} else {
+			self.displayedPosts = posts
 		}
 	}
 
@@ -217,14 +238,40 @@ class ProfileViewController: UIViewController {
 
 		let selectedPost = displayedPosts[indexPath.row]
 
-		if PostManager.shared.isPostSaved(selectedPost) {
-			PostManager.shared.deletePost(selectedPost)
+		if viewModel.isPostSaved(selectedPost) {
+			return
 		} else {
-			PostManager.shared.savePost(selectedPost)
+			viewModel.savePost(selectedPost)
+			let alertController = UIAlertController(title: "Saved to Faves!", message: nil, preferredStyle: .alert)
+			alertController.view.layer.opacity = 0.7
+			self.present(alertController, animated: true)
+			DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+				alertController.dismiss(animated: true)
+			}
 		}
 		loadTable()
 	}
 
+	@objc func filterButtonTapped() {
+		let alertvc = UIAlertController(title: "Search by author", message: nil, preferredStyle: .alert)
+		alertvc.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+		alertvc.addTextField()
+		alertvc.addAction(UIAlertAction(title: "Search", style: .default, handler: { [weak self] _ in
+			guard let self = self else {
+				return
+			}
+			guard let textField = alertvc.textFields?.first else {
+				return
+			}
+			viewModel.updatePostsFiltered(by: textField.text ?? "")
+		}))
+
+		present(alertvc, animated: true)
+	}
+
+	@objc func clearButtonTapped() {
+		self.loadTable()
+	}
 }
 
 extension ProfileViewController: UITableViewDataSource, UITableViewDelegate {
@@ -286,6 +333,16 @@ extension ProfileViewController: UITableViewDataSource, UITableViewDelegate {
 		if indexPath.section == 0  && !isShowingFavoritePosts {
 			let galleryVC = PhotoGalleryViewController()
 			navigationController?.pushViewController(galleryVC, animated: true)
+		} else {
+		}
+	}
+
+	func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+		if isShowingFavoritePosts {
+			if editingStyle == .delete {
+				viewModel.deletePost(displayedPosts[indexPath.row])
+				loadTable()
+			}
 		} else {
 		}
 	}
