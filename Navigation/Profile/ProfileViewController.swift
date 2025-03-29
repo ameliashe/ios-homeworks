@@ -7,9 +7,25 @@
 
 import UIKit
 import StorageService
+import CoreData
 
 class ProfileViewController: UIViewController {
-	
+
+	//MARK: CoreData
+	lazy var fetchResultsController = {
+
+		let request = FavoritePost.fetchRequest()
+		request.sortDescriptors = [NSSortDescriptor(key: "author", ascending: false)]
+
+		let frc = NSFetchedResultsController(
+			fetchRequest: request,
+			managedObjectContext: viewModel.persistentContainer.viewContext,
+			sectionNameKeyPath: nil,
+			cacheName: nil
+		)
+		return frc
+	}()
+
 	//MARK: Properties
 	var isShowingFavoritePosts: Bool = false
 	var user: User?
@@ -66,11 +82,15 @@ class ProfileViewController: UIViewController {
 		setupGesture()
 		setupNavigationBar()
 		configureFavoritesTable()
+
+		fetchResultsController.delegate = self
+		try? fetchResultsController.performFetch()
 	}
 
 	override func viewWillAppear(_ animated: Bool) {
-		super.viewWillAppear(true)
-		loadTable()
+		super.viewWillAppear(animated)
+
+		configureFavoritesTable()
 	}
 
 	//MARK: Layout
@@ -175,18 +195,25 @@ class ProfileViewController: UIViewController {
 		})
 	}
 
-	func loadTable() {
-		if isShowingFavoritePosts {
-			viewModel.fetchPosts()
-		}
+	func loadFavoritePosts() {
+		let request = FavoritePost.fetchRequest()
+		request.sortDescriptors = [NSSortDescriptor(key: "author", ascending: false)]
+
+		self.fetchResultsController = NSFetchedResultsController(
+			fetchRequest: request,
+			managedObjectContext: self.viewModel.persistentContainer.viewContext,
+			sectionNameKeyPath: nil,
+			cacheName: nil
+		)
+
+		configureFavoritesTable()
 	}
 
 	func configureFavoritesTable() {
 		if isShowingFavoritePosts {
-			viewModel.postsChangesBlock = { [weak self] in
-				self?.displayedPosts = self?.viewModel.posts ?? []
-				self?.displayedPostsTableView.reloadData()
-			}
+			try? fetchResultsController.performFetch()
+			displayedPosts = fetchResultsController.fetchedObjects?.map { Post(entity: $0) } ?? []
+			displayedPostsTableView.reloadData()
 		} else {
 			self.displayedPosts = posts
 		}
@@ -249,7 +276,6 @@ class ProfileViewController: UIViewController {
 				alertController.dismiss(animated: true)
 			}
 		}
-		loadTable()
 	}
 
 	@objc func filterButtonTapped() {
@@ -263,14 +289,37 @@ class ProfileViewController: UIViewController {
 			guard let textField = alertvc.textFields?.first else {
 				return
 			}
-			viewModel.updatePostsFiltered(by: textField.text ?? "")
+			if let text = textField.text, !text.isEmpty {
+				let request = FavoritePost.fetchRequest()
+				request.sortDescriptors = [NSSortDescriptor(key: "author", ascending: false)]
+				request.predicate = NSPredicate(format: "author CONTAINS[cd] %@", text)
+
+				self.fetchResultsController = NSFetchedResultsController(
+					fetchRequest: request,
+					managedObjectContext: self.viewModel.persistentContainer.viewContext,
+					sectionNameKeyPath: nil,
+					cacheName: nil
+				)
+				configureFavoritesTable()
+			} else {
+				try? fetchResultsController.performFetch()
+			}
 		}))
 
 		present(alertvc, animated: true)
 	}
 
 	@objc func clearButtonTapped() {
-		self.loadTable()
+		let request = FavoritePost.fetchRequest()
+		request.sortDescriptors = [NSSortDescriptor(key: "author", ascending: false)]
+
+		self.fetchResultsController = NSFetchedResultsController(
+			fetchRequest: request,
+			managedObjectContext: viewModel.persistentContainer.viewContext,
+			sectionNameKeyPath: nil,
+			cacheName: nil
+		)
+		configureFavoritesTable()
 	}
 }
 
@@ -299,9 +348,9 @@ extension ProfileViewController: UITableViewDataSource, UITableViewDelegate {
 
 	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		if section == 0 {
-			return isShowingFavoritePosts ? 0 : 1
+			return isShowingFavoritePosts ? displayedPosts.count : 1
 		}
-		return displayedPosts.count
+		return isShowingFavoritePosts ? 0 : displayedPosts.count
 	}
 
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -311,14 +360,29 @@ extension ProfileViewController: UITableViewDataSource, UITableViewDelegate {
 			}
 			return cell
 		}
-		guard let cell = tableView.dequeueReusableCell(withIdentifier: CellReuseID.base.rawValue, for: indexPath) as? CustomPostCell else {
-			fatalError("Could not dequeue CustomPostCell")
+
+		if indexPath.section == 0 && isShowingFavoritePosts {
+			guard let cell = tableView.dequeueReusableCell(withIdentifier: CellReuseID.base.rawValue, for: indexPath) as? CustomPostCell else {
+				fatalError("Could not dequeue CustomPostCell")
+			}
+			guard !displayedPosts.isEmpty else {
+				return UITableViewCell()
+			}
+			cell.update(displayedPosts[indexPath.row])
+			return cell
 		}
-		guard !displayedPosts.isEmpty else {
+		if indexPath.section == 1 && !isShowingFavoritePosts {
+			guard let cell = tableView.dequeueReusableCell(withIdentifier: CellReuseID.base.rawValue, for: indexPath) as? CustomPostCell else {
+				fatalError("Could not dequeue CustomPostCell")
+			}
+			guard !displayedPosts.isEmpty else {
+				return UITableViewCell()
+			}
+			cell.update(displayedPosts[indexPath.row])
+			return cell
+		} else {
 			return UITableViewCell()
 		}
-		cell.update(displayedPosts[indexPath.row])
-		return cell
 	}
 
 	func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
@@ -340,10 +404,50 @@ extension ProfileViewController: UITableViewDataSource, UITableViewDelegate {
 	func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
 		if isShowingFavoritePosts {
 			if editingStyle == .delete {
-				viewModel.deletePost(displayedPosts[indexPath.row])
-				loadTable()
+				let favoritePost = fetchResultsController.object(at: indexPath)
+				viewModel.persistentContainer.viewContext.delete(favoritePost)
+
+				try? viewModel.persistentContainer.viewContext.save()
 			}
 		} else {
+		}
+	}
+}
+
+extension ProfileViewController: NSFetchedResultsControllerDelegate {
+
+	func controller(_ controller: NSFetchedResultsController<any NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+
+		if isShowingFavoritePosts {
+
+			switch type {
+			case .insert:
+				displayedPostsTableView.insertRows(at: [newIndexPath!], with: .automatic)
+				configureFavoritesTable()
+			case .delete:
+				displayedPostsTableView.deleteRows(at: [indexPath!], with: .automatic)
+				configureFavoritesTable()
+			case .move:
+				displayedPostsTableView.moveRow(at: indexPath!, to: newIndexPath!)
+				configureFavoritesTable()
+			case .update:
+				displayedPostsTableView.reloadData()
+
+			@unknown default:
+				break
+			}
+		}
+	}
+
+	func controllerWillChangeContent(_ controller: NSFetchedResultsController<any NSFetchRequestResult>) {
+		displayedPostsTableView.beginUpdates()
+	}
+
+	func controllerDidChangeContent(_ controller: NSFetchedResultsController<any NSFetchRequestResult>) {
+		displayedPostsTableView.endUpdates()
+
+		if let fetchedObjects = controller.fetchedObjects as? [FavoritePost] {
+			displayedPosts = fetchedObjects.map { Post(entity: $0) }
 		}
 	}
 }
