@@ -42,6 +42,10 @@ class FeedViewController: UIViewController {
 		self?.navigateToAudioRecVC()
 	}
 
+	private lazy var showMapButton = CustomButton(title: "Map") { [weak self] in
+		self?.navigateToMapVC()
+	}
+
 	private let guessTextField: TextField = {
 		let field = TextField()
 		field.placeholder = "Guess..."
@@ -131,6 +135,7 @@ class FeedViewController: UIViewController {
 		view.addSubview(showPlayerButton)
 		view.addSubview(showVideosButton)
 		view.addSubview(showAudioRecorderButton)
+		view.addSubview(showMapButton)
 	}
 
 	func configureStackView() {
@@ -182,6 +187,11 @@ class FeedViewController: UIViewController {
 			showAudioRecorderButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
 			showAudioRecorderButton.heightAnchor.constraint(equalToConstant: 50),
 
+			showMapButton.topAnchor.constraint(equalTo: showAudioRecorderButton.bottomAnchor, constant: 10),
+			showMapButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+			showMapButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+			showMapButton.heightAnchor.constraint(equalToConstant: 50),
+
 		])
 	}
 
@@ -206,6 +216,12 @@ class FeedViewController: UIViewController {
 		let audioRecVC = AudioRecViewController()
 		navigationController?.pushViewController(audioRecVC, animated: true)
 	}
+
+	private func navigateToMapVC() {
+		let mapVC = MapViewController()
+		navigationController?.pushViewController(mapVC, animated: true)
+	}
+
 
 	func playButtonTapped() {
 		toggleViews()
