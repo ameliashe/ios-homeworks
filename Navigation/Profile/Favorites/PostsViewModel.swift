@@ -11,7 +11,6 @@ import CoreData
 final class PostsViewModel {
 
 	private(set) var posts: [Post] = []
-	var postsChangesBlock: (() -> Void)?
 
 	lazy var persistentContainer: NSPersistentContainer = {
 		let container = NSPersistentContainer(name: "FavoritePost")
@@ -31,7 +30,6 @@ final class PostsViewModel {
 
 		persistentContainer.viewContext.perform { [weak self] in
 			self?.posts = posts
-			self?.postsChangesBlock?()
 		}
 	}
 
@@ -60,35 +58,21 @@ final class PostsViewModel {
 		}
 	}
 
-	func deletePost(_ post: Post) {
+	func deletePost(_ post: FavoritePost) {
 
 		persistentContainer.performBackgroundTask { [weak self] backgroundContext in
 			guard let self  else {
 				return
 			}
 
-			let fetchRequest = FavoritePost.fetchRequest()
-			fetchRequest.predicate = NSPredicate(
-				format: "author == %@ AND postDescription == %@ AND image == %@",
-				post.author, post.description, post.image
-			)
-
-			if let result = try? backgroundContext.fetch(fetchRequest),
-			   let postEntity = result.first {
-				
-				backgroundContext.delete(postEntity)
-
-				do {
-					try backgroundContext.save()
-					self.fetchPosts()
-				} catch {
-					print("Failed to delete post: \(error)")
-				}
-
-			} else {
-				print("Couldn't delete post: not found in background context")
+			let postForDelete = backgroundContext.object(with: post.objectID)
+			backgroundContext.delete(postForDelete)
+			do {
+				try self.persistentContainer.viewContext.save()
+				self.fetchPosts()
+			} catch {
+				print("Failed to delete post: \(error)")
 			}
-
 		}
 	}
 
@@ -104,19 +88,6 @@ final class PostsViewModel {
 		)
 
 		return (try? persistentContainer.viewContext.fetch(fetchRequest))?.first
-	}
-
-	func updatePostsFiltered(by name: String?) {
-		let fetchRequest = FavoritePost.fetchRequest()
-		if let name = name, !name.isEmpty {
-			fetchRequest.predicate = NSPredicate(format: "author CONTAINS[cd] %@", name)
-		}
-		let entities = (try? persistentContainer.viewContext.fetch(fetchRequest)) ?? []
-
-		persistentContainer.viewContext.perform { [weak self] in
-			self?.posts = entities.map(Post.init)
-			self?.postsChangesBlock?()
-		}
 	}
 }
 
