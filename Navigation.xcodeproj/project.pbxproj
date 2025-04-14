@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		94DAD61164B1BE0B4E8A2015 /* Pods_Navigation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B13EA6A1FE50DEB1F1E75436 /* Pods_Navigation.framework */; };
 		B5960A545FEAC1279CE09F6E /* Pods_StorageService.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B85B6DE43D02BD9546799CF /* Pods_StorageService.framework */; };
+		CE0805E22DAC3C4D00BBC9B0 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = CE0805E12DAC3C4D00BBC9B0 /* Localizable.xcstrings */; };
 		CE1399A92D5BF6D700D6F275 /* iOSIntPackage in Frameworks */ = {isa = PBXBuildFile; productRef = CE1399A82D5BF6D700D6F275 /* iOSIntPackage */; };
 		CE91A0C02D5950FE006B86B2 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = CE91A0BF2D5950FE006B86B2 /* GoogleService-Info.plist */; };
 		CE9A06452D051EB70054000A /* StorageService.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE9A063D2D051EB70054000A /* StorageService.framework */; };
@@ -45,6 +46,7 @@
 		B13EA6A1FE50DEB1F1E75436 /* Pods_Navigation.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Navigation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B19177A4D46B0CE8B454A610 /* Pods-StorageService.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StorageService.debug.xcconfig"; path = "Target Support Files/Pods-StorageService/Pods-StorageService.debug.xcconfig"; sourceTree = "<group>"; };
 		B711C45B8E7E22A29F45CF2E /* Pods-Navigation.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Navigation.release.xcconfig"; path = "Target Support Files/Pods-Navigation/Pods-Navigation.release.xcconfig"; sourceTree = "<group>"; };
+		CE0805E12DAC3C4D00BBC9B0 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		CE5480F62CBC56900082AC64 /* Navigation.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Navigation.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE91A0BF2D5950FE006B86B2 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		CE9A063D2D051EB70054000A /* StorageService.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = StorageService.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -140,6 +142,7 @@
 		CE5480ED2CBC568F0082AC64 = {
 			isa = PBXGroup;
 			children = (
+				CE0805E12DAC3C4D00BBC9B0 /* Localizable.xcstrings */,
 				CE5480F82CBC56900082AC64 /* Navigation */,
 				CE9A063E2D051EB70054000A /* StorageService */,
 				CE5480F72CBC56900082AC64 /* Products */,
@@ -244,6 +247,7 @@
 			knownRegions = (
 				en,
 				Base,
+				ru,
 			);
 			mainGroup = CE5480ED2CBC568F0082AC64;
 			minimizedProjectReferenceProxies = 1;
@@ -266,6 +270,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CE0805E22DAC3C4D00BBC9B0 /* Localizable.xcstrings in Resources */,
 				CE91A0C02D5950FE006B86B2 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -486,6 +491,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
@@ -542,6 +548,7 @@
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;

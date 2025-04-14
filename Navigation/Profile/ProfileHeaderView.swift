@@ -43,13 +43,13 @@ class ProfileHeaderView: UITableViewHeaderFooterView {
 		return label
 	}()
 
-	private lazy var setStatusButton = CustomButton(title: "Show status") { [weak self] in
+	private lazy var setStatusButton = CustomButton(title: NSLocalizedString("Change status", comment: "Change status button text")) { [weak self] in
 		self?.setStatusTapped()
 	}
 
 	let statusTextField: TextField = {
 		let field = TextField()
-		field.placeholder = "Change status"
+		field.placeholder = NSLocalizedString("Change status", comment: "Placeholder for changing profile status")
 		field.backgroundColor = .white
 		field.font = .systemFont(ofSize: .init(15), weight: .regular)
 		field.textColor = .black

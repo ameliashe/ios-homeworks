@@ -14,8 +14,8 @@ final class FeedModel {
 	}
 
 	var posts: [Post] = [
-		Post(title: "This is the first post!"),
-		Post(title: "This is the second post!")
+		Post(title: NSLocalizedString("This is the first post!", comment: "Test post 1 title")),
+		Post(title: NSLocalizedString("This is the second post!", comment: "Test post 2 title"))
 	]
 
 	var secretWord: String = "block"

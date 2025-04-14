@@ -85,12 +85,14 @@ class AudioRecViewController: UIViewController {
 			print("Already authorized")
 		case .restricted, .denied:
 			showPermissionAlert()
+		@unknown default:
+			print("Unknown error")
 		}
 	}
 
 	private func showPermissionAlert() {
-		let alert = UIAlertController(title: "Audio recording is not allowed",
-									  message: "Grant permission in Settings to record audio",
+		let alert = UIAlertController(title: NSLocalizedString("Audio recording is not allowed", comment: "Alert header"),
+									  message: NSLocalizedString("Grant permission in Settings to record audio", comment: "Alert message"),
 									  preferredStyle: .alert)
 		alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
 		present(alert, animated: true)
@@ -110,18 +112,18 @@ class AudioRecViewController: UIViewController {
 		do {
 			audioRecorder = try AVAudioRecorder(url: audioFilename, settings: settings)
 			guard let recorder = audioRecorder else {
-				showErrorAlert(message: "Error creating audio recorder")
+				showErrorAlert(message: NSLocalizedString("Error creating audio recorder", comment: "Error alert message"))
 				return
 			}
 			recorder.delegate = self
 			recorder.prepareToRecord()
 		} catch {
-			showErrorAlert(message: "Error creating audio recorder: \(error.localizedDescription)")
+			showErrorAlert(message: NSLocalizedString("Error creating audio recorder:", comment: "Error alert message with description") + " \(error.localizedDescription)")
 		}
 	}
 
 	func showErrorAlert(message: String) {
-		let alert = UIAlertController(title: "Ошибка", message: message, preferredStyle: .alert)
+		let alert = UIAlertController(title: NSLocalizedString("Error", comment: "Error alert header"), message: message, preferredStyle: .alert)
 		alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
 		present(alert, animated: true, completion: nil)
 	}
@@ -133,7 +135,7 @@ class AudioRecViewController: UIViewController {
 		}
 
 		guard let recorder = audioRecorder else {
-			showErrorAlert(message: "Recorder is not initialized")
+			showErrorAlert(message: NSLocalizedString("Recorder is not initialized", comment: "Initialization error alert message"))
 			return
 		}
 
@@ -148,14 +150,14 @@ class AudioRecViewController: UIViewController {
 				recorder.record()
 				recordButton.tintColor = .red
 			} catch {
-				showErrorAlert(message: "Error: \(error.localizedDescription)")
+				showErrorAlert(message: NSLocalizedString("Error:", comment: "Error message with description") + " \(error.localizedDescription)")
 			}
 		}
 	}
 
 	@objc private func playTapped() {
 		guard let audioFileName = audioFileName, FileManager.default.fileExists(atPath: audioFileName.path) else {
-			showErrorAlert(message: "Audio file not found!")
+			showErrorAlert(message: NSLocalizedString("Audio file not found!", comment: "Audio file not found description"))
 			return
 		}
 
@@ -163,7 +165,7 @@ class AudioRecViewController: UIViewController {
 			audioPlayer = try AVAudioPlayer(contentsOf: audioFileName)
 			audioPlayer?.play()
 		} catch {
-			showErrorAlert(message: "Error: \(error.localizedDescription)")
+			showErrorAlert(message: NSLocalizedString("Error:", comment: "Error message with description") + " \(error.localizedDescription)")
 		}
 	}
 }

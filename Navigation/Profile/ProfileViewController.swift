@@ -269,7 +269,7 @@ class ProfileViewController: UIViewController {
 			return
 		} else {
 			viewModel.savePost(selectedPost)
-			let alertController = UIAlertController(title: "Saved to Faves!", message: nil, preferredStyle: .alert)
+			let alertController = UIAlertController(title: NSLocalizedString("Saved to Faves!", comment: "Alert: post was saved to favorites"), message: nil, preferredStyle: .alert)
 			alertController.view.layer.opacity = 0.7
 			self.present(alertController, animated: true)
 			DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
@@ -279,10 +279,12 @@ class ProfileViewController: UIViewController {
 	}
 
 	@objc func filterButtonTapped() {
-		let alertvc = UIAlertController(title: "Search by author", message: nil, preferredStyle: .alert)
-		alertvc.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-		alertvc.addTextField()
-		alertvc.addAction(UIAlertAction(title: "Search", style: .default, handler: { [weak self] _ in
+		let alertvc = UIAlertController(title: NSLocalizedString("Search by author", comment: "Title of search window of favorites by author"), message: nil, preferredStyle: .alert)
+		alertvc.addAction(UIAlertAction(title: NSLocalizedString("Cancel", comment: "Cancel button title"), style: .cancel))
+		alertvc.addTextField { textField in
+			textField.placeholder = NSLocalizedString("Author's name", comment: "TextField placeholder for entering author's name")
+		}
+		alertvc.addAction(UIAlertAction(title: NSLocalizedString("Search", comment: "Search button title"), style: .default, handler: { [weak self] _ in
 			guard let self = self else {
 				return
 			}

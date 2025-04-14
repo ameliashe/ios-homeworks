@@ -37,7 +37,7 @@ class PhotoGalleryViewController: UIViewController {
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		navigationItem.title = "Photo Gallery"
+		navigationItem.title = NSLocalizedString("Photo Gallery", comment: "Photo gallery VC title")
 
 		processImages(images: imageList, completionClosure: completionClosure)
 		addSubviews()

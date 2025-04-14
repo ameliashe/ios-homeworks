@@ -110,9 +110,17 @@ class CustomPostCell: UITableViewCell {
 		authorLabel.text = model.author
 		descriptionLabel.text = model.description
 		attachedImageView.image = UIImage(named: model.image)
-		likesLabel.text = "Likes: \(model.likes)"
-		viewsLabel.text = "Views: \(model.views)"
+		let textLikes = String(
+			format: NSLocalizedString("%d likes", comment: "Number of likes"),
+			model.likes
+		)
+		likesLabel.text = textLikes
 
+		let textViews = String(
+			format: NSLocalizedString("%d views", comment: "Number of views"),
+			model.views
+		)
+		viewsLabel.text = textViews
 	}
 
 }

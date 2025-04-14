@@ -38,7 +38,6 @@ class CurrentUserService: UserService {
 	func getUser(login: String) -> User? {
 		return login == currentUser.login ? currentUser : nil
 	}
-
 }
 
 class TestUserService: UserService {

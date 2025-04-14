@@ -28,7 +28,7 @@ class InfoViewController: UIViewController {
 		return label
 	}()
 
-	private lazy var alertButton = CustomButton(title: "Show Alert") { [weak self] in
+	private lazy var alertButton = CustomButton(title: NSLocalizedString("Show Alert", comment: "Show alert button title")) { [weak self] in
 		self?.alertButtonTapped()
 	}
 
@@ -79,7 +79,11 @@ class InfoViewController: UIViewController {
 			case .success(let data):
 				let todoTaskParsed = Parser.parseTask(data)
 				DispatchQueue.main.async {
-					self?.taskLabel.text = "Таска называется: \(todoTaskParsed?.title ?? "No task")"
+					let taskText = String(
+						format: NSLocalizedString("Task named: %@", comment: "Label showing the name of the fetched task"),
+						todoTaskParsed?.title ?? NSLocalizedString("No task", comment: "Default task title")
+					)
+					self?.taskLabel.text = taskText
 				}
 			case .failure(let error):
 				print(error.localizedDescription)
@@ -93,7 +97,12 @@ class InfoViewController: UIViewController {
 			case .success(let data):
 				let planet = Parser.decodePlanet(data)
 				DispatchQueue.main.async {
-					self?.planetLabel.text = "Период обращения \(planet?.name ?? "-"): \(planet?.orbitalPeriod ?? 0)"
+					let orbitalPeriodText = String(
+						format: NSLocalizedString("Orbital period of %@: %d", comment: "Planet name and its orbital period in days"),
+						planet?.name ?? "-",
+						planet?.orbitalPeriod ?? 0
+					)
+					self?.planetLabel.text = orbitalPeriodText
 				}
 			case .failure(let error):
 				print(error.localizedDescription)
@@ -105,11 +114,11 @@ class InfoViewController: UIViewController {
 	//MARK: User interaction
 	@objc func alertButtonTapped() {
 		let alert: UIAlertController = {
-			let alert = UIAlertController(title: "Warning!", message: "This is Alert", preferredStyle: .alert)
-			alert.addAction(UIAlertAction(title: "Ok", style: .default) { _ in
-				print("Ok")
+			let alert = UIAlertController(title: NSLocalizedString("Warning!", comment: "Test alert title"), message: NSLocalizedString("This is Alert", comment: "Test alert message"), preferredStyle: .alert)
+			alert.addAction(UIAlertAction(title: "OK", style: .default) { _ in
+				print("OK")
 			})
-			alert.addAction(UIAlertAction(title: "Cancel", style: .cancel) { _ in
+			alert.addAction(UIAlertAction(title: NSLocalizedString("Cancel", comment: "Cancel alert button"), style: .cancel) { _ in
 				print("Cancel")
 			})
 
