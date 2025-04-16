@@ -20,7 +20,7 @@ final class FeedViewModel {
 
 	func checkWord(_ word: String) {
 		feedModel.check(word) { isCorrect in
-			let resultText = isCorrect ? "is correct!" : "is wrong!"
+			let resultText = isCorrect ? NSLocalizedString("– is correct!", comment: "correct word title") : NSLocalizedString("– is wrong!", comment: "incorrect word title")
 			let resultColor = isCorrect ? UIColor.green : UIColor.red
 			onResultUpdated?(resultText, resultColor)
 		}

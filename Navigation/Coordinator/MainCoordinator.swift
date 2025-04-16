@@ -44,9 +44,9 @@ class MainCoordinator: Coordinator {
 		let controllers = [feedNC, profileNC, favNC]
 		tabBarController.viewControllers = controllers
 
-		feedNC.tabBarItem = UITabBarItem(title: "Feed", image: UIImage(systemName: "list.bullet.rectangle"), tag: 0)
-		profileNC.tabBarItem = UITabBarItem(title: "Profile", image: UIImage(systemName: "person"), tag: 1)
-		favNC.tabBarItem = UITabBarItem(title: "Favorites", image: UIImage(systemName: "heart"), tag: 2)
+		feedNC.tabBarItem = UITabBarItem(title: NSLocalizedString("Feed", comment: "Feed tab bar item"), image: UIImage(systemName: "list.bullet.rectangle"), tag: 0)
+		profileNC.tabBarItem = UITabBarItem(title: NSLocalizedString("Profile", comment: "Profile tab bar item"), image: UIImage(systemName: "person"), tag: 1)
+		favNC.tabBarItem = UITabBarItem(title: NSLocalizedString("Favorites", comment: "Favorites tab bar item"), image: UIImage(systemName: "heart"), tag: 2)
 
 		tabBarController.selectedIndex = 0
 		tabBarController.tabBar.isTranslucent = false

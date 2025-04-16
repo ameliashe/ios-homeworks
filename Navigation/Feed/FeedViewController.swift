@@ -10,45 +10,45 @@ import UIKit
 class FeedViewController: UIViewController {
 
 	//MARK: UI elements
-	private lazy var postButton1 = CustomButton(title: "Show post") { [weak self] in
+	private lazy var postButton1 = CustomButton(title: NSLocalizedString("Show post", comment: "Show post button title")) { [weak self] in
 		guard let post = self?.viewModel.getPost(at: 0) else { return }
 		self?.navigateToPostViewController(post)
 	}
 
-	private lazy var postButton2 = CustomButton(title: "Show post") { [weak self] in
+	private lazy var postButton2 = CustomButton(title: NSLocalizedString("Show post", comment: "Show post button title")) { [weak self] in
 		guard let post = self?.viewModel.getPost(at: 1) else { return }
 		self?.navigateToPostViewController(post)
 	}
 
 	//Сделаем игру в угадывание слова ограниченной по времени.
-	private lazy var playGuessButton = CustomButton(title: "Play \"Guess the word\"!") { [weak self] in
+	private lazy var playGuessButton = CustomButton(title: NSLocalizedString("Play \"Guess the word\"!", comment: "Guess the word button title")) { [weak self] in
 		self?.playButtonTapped()
 	}
 
-	private lazy var checkGuessButton = CustomButton(title: "CheckGuess") { [weak self] in
+	private lazy var checkGuessButton = CustomButton(title: NSLocalizedString("Check guess", comment: "Check guess button title")) { [weak self] in
 		guard let guessText = self?.guessTextField.text, !guessText.isEmpty else { return }
 		self?.viewModel.checkWord(guessText)
 	}
 
-	private lazy var showPlayerButton = CustomButton(title: "Music Player") { [weak self] in
+	private lazy var showPlayerButton = CustomButton(title: NSLocalizedString("Music player", comment: "Music player button title")) { [weak self] in
 		self?.navigateToPlayerVC()
 	}
 
-	private lazy var showVideosButton = CustomButton(title: "Videos") { [weak self] in
+	private lazy var showVideosButton = CustomButton(title: NSLocalizedString("Videos", comment: "Videos button title")) { [weak self] in
 		self?.navigateToVideosVC()
 	}
 
-	private lazy var showAudioRecorderButton = CustomButton(title: "Audio Recorder") { [weak self] in
+	private lazy var showAudioRecorderButton = CustomButton(title: NSLocalizedString("Audio recorder", comment: "Audio recorder button title")) { [weak self] in
 		self?.navigateToAudioRecVC()
 	}
 
-	private lazy var showMapButton = CustomButton(title: "Map") { [weak self] in
+	private lazy var showMapButton = CustomButton(title: NSLocalizedString("Map", comment: "Map button title")) { [weak self] in
 		self?.navigateToMapVC()
 	}
 
 	private let guessTextField: TextField = {
 		let field = TextField()
-		field.placeholder = "Guess..."
+		field.placeholder = NSLocalizedString("Guess...", comment: "Guess textfield placeholder")
 		field.backgroundColor = .white
 		field.font = .systemFont(ofSize: 15, weight: .regular)
 		field.textColor = .black
@@ -64,7 +64,7 @@ class FeedViewController: UIViewController {
 	private let resultLabel: UILabel = {
 		let label = UILabel()
 		label.textColor = .black
-		label.text = "Result"
+		label.text = NSLocalizedString("Result", comment: "Guess the word result label")
 		label.font = .systemFont(ofSize: 16, weight: .regular)
 		label.translatesAutoresizingMaskIntoConstraints = false
 		label.isHidden = true
@@ -227,12 +227,12 @@ class FeedViewController: UIViewController {
 		toggleViews()
 
 		var timeRemaining = 30
-		self.timerLabel.text = "Time remaining: \(timeRemaining)"
+		self.timerLabel.text = NSLocalizedString("Time remaining:", comment: "Countdown timer label text") + " \(timeRemaining)"
 
 		Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] timer in
 			guard let self = self else { return }
 				timeRemaining -= 1
-				self.timerLabel.text = timeRemaining <= 0 ? "Time's up!" : "Time remaining: \(timeRemaining)"
+			self.timerLabel.text = timeRemaining <= 0 ? NSLocalizedString("Time's up!", comment: "Time is up label text") : (NSLocalizedString("Time remaining:", comment: "Countdown timer label text") + " \(timeRemaining)")
 			if timeRemaining == 0 {
 				timer.invalidate()
 				toggleViews()

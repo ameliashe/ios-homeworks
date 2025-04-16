@@ -14,7 +14,7 @@ class PhotosTableViewCell: UITableViewCell {
 
 	let label: UILabel = {
 		let label = UILabel()
-		label.text = "Photos"
+		label.text = NSLocalizedString("Photos", comment: "Photos table view cell label")
 		label.font = UIFont.systemFont(ofSize: 24, weight: .bold)
 		label.textColor = .black
 		label.textAlignment = .left

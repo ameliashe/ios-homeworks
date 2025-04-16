@@ -28,7 +28,7 @@ class LogInViewController: UIViewController {
 
 	let usernameTextField: TextField = {
 		let textField = TextField()
-		textField.placeholder = "Email or phone"
+		textField.placeholder = NSLocalizedString("Email or phone", comment: "Username input placeholder")
 		textField.backgroundColor = .systemGray6
 #if DEBUG
 		textField.text = "test@test.com"
@@ -43,7 +43,7 @@ class LogInViewController: UIViewController {
 
 	private lazy var passwordTextField: TextField = {
 		let textField = TextField()
-		textField.placeholder = "Password"
+		textField.placeholder = NSLocalizedString("Password", comment: "Password input placeholder")
 #if DEBUG
 		textField.text = "123456"
 #endif
@@ -86,11 +86,11 @@ class LogInViewController: UIViewController {
 		return imageView
 	}()
 
-	private lazy var loginButton = CustomButton(title: "Log In") { [weak self] in
+	private lazy var loginButton = CustomButton(title: NSLocalizedString("Log In", comment: "Login button title")) { [weak self] in
 		self?.logInButtonTapped()
 	}
 
-	private lazy var signUpButton = CustomButton(title: "Sign Up") { [weak self] in
+	private lazy var signUpButton = CustomButton(title: NSLocalizedString("Sign Up", comment: "Sign up button title")) { [weak self] in
 		self?.signUpButtonTapped()
 	}
 
@@ -235,7 +235,7 @@ class LogInViewController: UIViewController {
 	//MARK: User Interaction Methods
 	func logInButtonTapped() {
 		guard let email = usernameTextField.text, let password = passwordTextField.text, !email.isEmpty, !password.isEmpty else {
-			showErrorAlert(message:"Логин и пароль не должны быть пустыми.")
+			showErrorAlert(message: NSLocalizedString("Username and password cannot be empty", comment: "Error message for empty login and password"))
 			return
 		}
 
@@ -262,7 +262,7 @@ class LogInViewController: UIViewController {
 
 	func signUpButtonTapped() {
 		guard let email = usernameTextField.text, let password = passwordTextField.text, !email.isEmpty, !password.isEmpty else {
-			showErrorAlert(message:"Логин и пароль не должны быть пустыми.")
+			showErrorAlert(message: NSLocalizedString("Username and password cannot be empty", comment: "Error message for empty login and password"))
 			return
 		}
 		loginButton.isEnabled = false
@@ -293,18 +293,18 @@ class LogInViewController: UIViewController {
 	func handleAuthError(_ error: AuthError) {
 		switch error {
 		case .userNotFound:
-			showErrorAlert(message: "Пользователь не найден. Зарегистрируйтесь.")
+			showErrorAlert(message: NSLocalizedString("User not found. Please sign up.", comment: "Error message for user not found"))
 		case .wrongPassword:
-			showErrorAlert(message: "Неверный пароль.")
+			showErrorAlert(message: NSLocalizedString("Wrong password", comment: "Error message for wrong password"))
 		case .emailAlreadyInUse:
-			showErrorAlert(message: "Этот email уже зарегистрирован.")
+			showErrorAlert(message: NSLocalizedString("This email is already in use", comment: "Error message for email already in use"))
 		case .unknownError:
-			showErrorAlert(message: "Произошла неизвестная ошибка. Попробуйте снова.")
+			showErrorAlert(message: NSLocalizedString("Unknown error occurred. Please try again later.", comment: "Error message for unknown error"))
 		}
 	}
 
 	func showErrorAlert(message: String) {
-		let alert = UIAlertController(title: "Ошибка", message: message, preferredStyle: .alert)
+		let alert = UIAlertController(title: NSLocalizedString("Error", comment: "Alert title for error"), message: message, preferredStyle: .alert)
 		alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
 		present(alert, animated: true, completion: nil)
 	}

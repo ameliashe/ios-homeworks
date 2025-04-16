@@ -85,21 +85,21 @@ class MapViewController: UIViewController {
 	}
 
 	private func setupNavBar() {
-		navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Remove all pins", style: .plain, target: self, action: #selector(removeAnnotations))
+		navigationItem.rightBarButtonItem = UIBarButtonItem(title: NSLocalizedString("Remove all pins", comment: "Remove pins button text"), style: .plain, target: self, action: #selector(removeAnnotations))
 	}
 
 	private func requestLocationAccess() {
 		locationManager.requestWhenInUseAuthorization()
 
 		if locationManager.authorizationStatus != .authorizedWhenInUse {
-			let alertController = UIAlertController(title: "Provide location access", message: "We need location access to show your current location", preferredStyle: .alert)
+			let alertController = UIAlertController(title: NSLocalizedString("Provide location access", comment: "Provide location access alert title"), message: NSLocalizedString("We need location access to show your current location", comment: "Provide location access alert message"), preferredStyle: .alert)
 			let settingsAction = UIAlertAction(title: "Provide access", style: .default) { _ in
 				if let url = URL(string: UIApplication.openSettingsURLString),
 				   UIApplication.shared.canOpenURL(url) {
 					UIApplication.shared.open(url)
 				}
 			}
-			let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
+			let cancelAction = UIAlertAction(title: NSLocalizedString("Cancel", comment: "Cancel alert button"), style: .cancel)
 
 			alertController.addAction(settingsAction)
 			alertController.addAction(cancelAction)
@@ -124,21 +124,21 @@ class MapViewController: UIViewController {
 
 
 	@objc private func configureMap() {
-		let alert = UIAlertController(title: "Map Type", message: nil, preferredStyle: .actionSheet)
+		let alert = UIAlertController(title: NSLocalizedString("Map Type", comment: "Map type alert title"), message: nil, preferredStyle: .actionSheet)
 
-			let standard = UIAlertAction(title: "Standard", style: .default) { _ in
+		let standard = UIAlertAction(title: NSLocalizedString("Standard", comment: "Standard map type"), style: .default) { _ in
 				self.mapView.mapType = .standard
 			}
 
-			let satellite = UIAlertAction(title: "Satellite", style: .default) { _ in
+			let satellite = UIAlertAction(title: NSLocalizedString("Satellite", comment: "Satellite map type"), style: .default) { _ in
 				self.mapView.mapType = .satellite
 			}
 
-			let hybrid = UIAlertAction(title: "Hybrid", style: .default) { _ in
+			let hybrid = UIAlertAction(title: NSLocalizedString("Hybrid", comment: "Hybrid map type"), style: .default) { _ in
 				self.mapView.mapType = .hybrid
 			}
 
-			let cancel = UIAlertAction(title: "Cancel", style: .cancel)
+			let cancel = UIAlertAction(title: NSLocalizedString("Cancel", comment: "Cancel alert button"), style: .cancel)
 
 			alert.addAction(standard)
 			alert.addAction(satellite)
@@ -172,23 +172,23 @@ extension MapViewController: CLLocationManagerDelegate, MKMapViewDelegate {
 	func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
 		guard let destinationCoordinates = view.annotation?.coordinate else { return }
 
-		let alert = UIAlertController(title: "Directions", message: "Get direction to this point?", preferredStyle: .actionSheet)
+		let alert = UIAlertController(title: NSLocalizedString("Directions", comment: "Directions alert title"), message: NSLocalizedString("Get directions to this point?", comment: "Directions alert message"), preferredStyle: .actionSheet)
 		let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
 		let directionsAction = UIAlertAction(title: "Get directions", style: .default) { [weak self] _ in
 			guard let self else { return }
 			if let currentLocation = self.locationManager.location?.coordinate {
-				let transportAlert = UIAlertController(title: "Transport Type", message: nil, preferredStyle: .actionSheet)
+				let transportAlert = UIAlertController(title: NSLocalizedString("Transport type", comment: "Transport type alert title"), message: nil, preferredStyle: .actionSheet)
 
-				let car = UIAlertAction(title: "Car", style: .default) { _ in
+				let car = UIAlertAction(title: NSLocalizedString("Car", comment: "Car transport type"), style: .default) { _ in
 					self.getRoute(from: currentLocation, to: destinationCoordinates, transportType: .automobile)
 				}
-				let walk = UIAlertAction(title: "Walking", style: .default) { _ in
+				let walk = UIAlertAction(title: NSLocalizedString("Walking", comment: "Walking transport type"), style: .default) { _ in
 					self.getRoute(from: currentLocation, to: destinationCoordinates, transportType: .walking)
 				}
-				let transit = UIAlertAction(title: "Transit", style: .default) { _ in
+				let transit = UIAlertAction(title: NSLocalizedString("Transit", comment: "Transit transport type"), style: .default) { _ in
 					self.getRoute(from: currentLocation, to: destinationCoordinates, transportType: .transit)
 				}
-				let cancel = UIAlertAction(title: "Cancel", style: .cancel)
+				let cancel = UIAlertAction(title: NSLocalizedString("Cancel", comment: "Cancel alert button"), style: .cancel)
 
 				transportAlert.addAction(car)
 				transportAlert.addAction(walk)
