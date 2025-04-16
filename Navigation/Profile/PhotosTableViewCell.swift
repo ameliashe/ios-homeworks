@@ -16,7 +16,7 @@ class PhotosTableViewCell: UITableViewCell {
 		let label = UILabel()
 		label.text = NSLocalizedString("Photos", comment: "Photos table view cell label")
 		label.font = UIFont.systemFont(ofSize: 24, weight: .bold)
-		label.textColor = .black
+		label.textColor = ColorPalette.customTextColor
 		label.textAlignment = .left
 		label.translatesAutoresizingMaskIntoConstraints = false
 		return label
@@ -25,7 +25,7 @@ class PhotosTableViewCell: UITableViewCell {
 	let arrowButton: UIButton = {
 		let button = UIButton(type: .system)
 		button.setImage(UIImage(systemName: "arrow.right"), for: .normal)
-		button.tintColor = .black
+		button.tintColor = ColorPalette.customTextColor
 		button.translatesAutoresizingMaskIntoConstraints = false
 		return button
 	}()
@@ -43,6 +43,8 @@ class PhotosTableViewCell: UITableViewCell {
 
 	override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
 		super.init(style: style, reuseIdentifier: reuseIdentifier)
+		contentView.backgroundColor = ColorPalette.cardBackground
+
 		setupViews()
 		setupConstraints()
 		setupCollectionView()

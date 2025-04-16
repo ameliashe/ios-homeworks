@@ -22,7 +22,7 @@ class PhotoGalleryViewController: UIViewController {
 		layout.scrollDirection = .vertical
 
 		let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-		collectionView.backgroundColor = .white
+		collectionView.backgroundColor = ColorPalette.customBackground
 		collectionView.register(PhotoGalleryCell.self, forCellWithReuseIdentifier: identifier)
 		collectionView.translatesAutoresizingMaskIntoConstraints = false
 		return collectionView

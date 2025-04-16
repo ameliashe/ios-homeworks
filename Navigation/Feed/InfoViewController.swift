@@ -13,7 +13,7 @@ class InfoViewController: UIViewController {
 	let taskLabel: UILabel = {
 		let label = UILabel()
 		label.font = .systemFont(ofSize: 17, weight: .medium)
-		label.textColor = .black
+		label.textColor = ColorPalette.customTextColor
 		label.textAlignment = .left
 		label.numberOfLines = 0
 		return label
@@ -22,7 +22,7 @@ class InfoViewController: UIViewController {
 	let planetLabel: UILabel = {
 		let label = UILabel()
 		label.font = .systemFont(ofSize: 17, weight: .medium)
-		label.textColor = .black
+		label.textColor = ColorPalette.customTextColor
 		label.textAlignment = .left
 		label.numberOfLines = 0
 		return label
