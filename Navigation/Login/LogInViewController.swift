@@ -41,7 +41,7 @@ class LogInViewController: UIViewController {
 		return textField
 	}()
 
-	private lazy var passwordTextField: TextField = {
+	internal lazy var passwordTextField: TextField = {
 		let textField = TextField()
 		textField.placeholder = NSLocalizedString("Password", comment: "Password input placeholder")
 #if DEBUG

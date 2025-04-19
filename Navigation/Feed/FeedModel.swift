@@ -7,7 +7,7 @@
 
 import Foundation
 
-final class FeedModel {
+class FeedModel {
 
 	public struct Post {
 		let title: String
