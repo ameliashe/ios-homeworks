@@ -14,7 +14,7 @@ class ProfileHeaderView: UITableViewHeaderFooterView {
 		let imageView = UIImageView()
 		imageView.image = UIImage(named: "cat")
 		imageView.layer.borderWidth = 3
-		imageView.layer.borderColor = UIColor.white.cgColor
+		imageView.layer.borderColor = ColorPalette.customBackground.cgColor
 		imageView.contentMode = .scaleAspectFill
 		imageView.clipsToBounds = true
 		imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -27,7 +27,7 @@ class ProfileHeaderView: UITableViewHeaderFooterView {
 		let label = UILabel()
 		label.text = "Рыжуля"
 		label.font = .systemFont(ofSize: .init(18), weight: .bold)
-		label.textColor = .black
+		label.textColor = ColorPalette.customTextColor
 		label.translatesAutoresizingMaskIntoConstraints = false
 
 		return label
@@ -50,9 +50,9 @@ class ProfileHeaderView: UITableViewHeaderFooterView {
 	let statusTextField: TextField = {
 		let field = TextField()
 		field.placeholder = NSLocalizedString("Change status", comment: "Placeholder for changing profile status")
-		field.backgroundColor = .white
+		field.backgroundColor = ColorPalette.accentColor
 		field.font = .systemFont(ofSize: .init(15), weight: .regular)
-		field.textColor = .black
+		field.textColor = ColorPalette.customTextColor
 		field.layer.cornerRadius = 10
 		field.layer.borderWidth = 1
 		field.layer.borderColor = UIColor.black.cgColor
@@ -65,6 +65,7 @@ class ProfileHeaderView: UITableViewHeaderFooterView {
 
 	override init(reuseIdentifier: String?) {
 		super.init(reuseIdentifier: reuseIdentifier)
+		backgroundColor = ColorPalette.cardBackground
 
 		addSubviews()
 		setupConstraints()

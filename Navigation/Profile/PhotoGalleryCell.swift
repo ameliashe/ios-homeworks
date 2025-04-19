@@ -48,7 +48,6 @@ class PhotoGalleryCell: UICollectionViewCell {
 
 	func update(_ imageName: UIImage) {
 		imageView.image = imageName
-//		imageView.image = UIImage(named: imageName)
 	}
 
 }

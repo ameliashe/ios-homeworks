@@ -29,11 +29,11 @@ class LogInViewController: UIViewController {
 	let usernameTextField: TextField = {
 		let textField = TextField()
 		textField.placeholder = NSLocalizedString("Email or phone", comment: "Username input placeholder")
-		textField.backgroundColor = .systemGray6
+		textField.backgroundColor = ColorPalette.accentColor
 #if DEBUG
 		textField.text = "test@test.com"
 #endif
-		textField.textColor = .black
+		textField.textColor = ColorPalette.customTextColor
 		textField.font = .systemFont(ofSize: 16)
 		textField.tintColor = UIColor(named: "VKColor")
 		textField.isUserInteractionEnabled = true
@@ -47,8 +47,8 @@ class LogInViewController: UIViewController {
 #if DEBUG
 		textField.text = "123456"
 #endif
-		textField.backgroundColor = .systemGray6
-		textField.textColor = .black
+		textField.backgroundColor = ColorPalette.accentColor
+		textField.textColor = ColorPalette.customTextColor
 		textField.font = .systemFont(ofSize: 16)
 		textField.tintColor = UIColor(named: "VKColor")
 		textField.isUserInteractionEnabled = true
@@ -131,7 +131,7 @@ class LogInViewController: UIViewController {
 	//MARK: UI Setup
 	func viewSetup() {
 		navigationController?.navigationBar.isHidden = true
-		view.backgroundColor = .white
+		view.backgroundColor = ColorPalette.customBackground
 
 		contentView.addSubview(logoImageView)
 		contentView.addSubview(credentialsStackView)

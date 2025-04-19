@@ -19,7 +19,7 @@ class PlayerViewController: UIViewController {
 	private lazy var playButton: UIButton = {
 		let button = UIButton(type: .system)
 		button.setImage(UIImage(systemName: "play.fill", withConfiguration: largeConfig), for: .normal)
-		button.tintColor = .black
+		button.tintColor = ColorPalette.customTextColor
 		button.addTarget(self, action: #selector(playTapped), for: .touchUpInside)
 		button.translatesAutoresizingMaskIntoConstraints = false
 		return button
@@ -28,7 +28,7 @@ class PlayerViewController: UIViewController {
 	private lazy var stopButton: UIButton = {
 		let button = UIButton(type: .system)
 		button.setImage(UIImage(systemName: "stop.fill", withConfiguration: largeConfig), for: .normal)
-		button.tintColor = .black
+		button.tintColor = ColorPalette.customTextColor
 		button.addTarget(self, action: #selector(stopTapped), for: .touchUpInside)
 		button.translatesAutoresizingMaskIntoConstraints = false
 		return button
@@ -37,7 +37,7 @@ class PlayerViewController: UIViewController {
 	private lazy var previousTrackButton: UIButton = {
 		let button = UIButton(type: .system)
 		button.setImage(UIImage(systemName: "backward.fill", withConfiguration: largeConfig), for: .normal)
-		button.tintColor = .black
+		button.tintColor = ColorPalette.customTextColor
 		button.addTarget(self, action: #selector(previousTapped), for: .touchUpInside)
 		button.translatesAutoresizingMaskIntoConstraints = false
 		return button
@@ -46,7 +46,7 @@ class PlayerViewController: UIViewController {
 	private lazy var nextTrackButton: UIButton = {
 		let button = UIButton(type: .system)
 		button.setImage(UIImage(systemName: "forward.fill", withConfiguration: largeConfig), for: .normal)
-		button.tintColor = .black
+		button.tintColor = ColorPalette.customTextColor
 		button.addTarget(self, action: #selector(nextTapped), for: .touchUpInside)
 		button.translatesAutoresizingMaskIntoConstraints = false
 		return button
@@ -74,7 +74,7 @@ class PlayerViewController: UIViewController {
 	let trackNameLabel: UILabel = {
 		let label = UILabel()
 		label.textAlignment = .center
-		label.textColor = .black
+		label.textColor = ColorPalette.customTextColor
 		label.font = .systemFont(ofSize: 25, weight: .medium)
 		label.translatesAutoresizingMaskIntoConstraints = false
 		return label
@@ -85,7 +85,7 @@ class PlayerViewController: UIViewController {
 	//MARK: Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-		view.backgroundColor = .white
+		view.backgroundColor = ColorPalette.customBackground
 
 		addSubviews()
 		setConstraints()

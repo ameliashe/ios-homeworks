@@ -13,7 +13,7 @@ class CustomPostCell: UITableViewCell {
 	let authorLabel: UILabel = {
 		let label = UILabel()
 		label.font = .systemFont(ofSize: 20, weight: .bold)
-		label.textColor = .black
+		label.textColor = ColorPalette.customTextColor
 		label.numberOfLines = 2
 		label.translatesAutoresizingMaskIntoConstraints = false
 		return label
@@ -31,7 +31,7 @@ class CustomPostCell: UITableViewCell {
 	let likesLabel: UILabel = {
 		let label = UILabel()
 		label.font = .systemFont(ofSize: 16, weight: .regular)
-		label.textColor = .black
+		label.textColor = ColorPalette.customTextColor
 		label.translatesAutoresizingMaskIntoConstraints = false
 		return label
 	}()
@@ -39,7 +39,7 @@ class CustomPostCell: UITableViewCell {
 	let viewsLabel: UILabel = {
 		let label = UILabel()
 		label.font = .systemFont(ofSize: 16, weight: .regular)
-		label.textColor = .black
+		label.textColor = ColorPalette.customTextColor
 		label.textAlignment = .right
 		label.translatesAutoresizingMaskIntoConstraints = false
 		return label
@@ -102,7 +102,7 @@ class CustomPostCell: UITableViewCell {
 	}
 
 	func tuneView() {
-		contentView.backgroundColor = .white
+		contentView.backgroundColor = ColorPalette.cardBackground
 		accessoryType = .none
 	}
 

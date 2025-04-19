@@ -12,7 +12,7 @@ class VideosTableViewCell: UITableViewCell {
 	let urlLabel: UILabel = {
 		let label = UILabel()
 		label.font = .systemFont(ofSize: 17, weight: .medium)
-		label.textColor = .black
+		label.textColor = ColorPalette.customTextColor
 		label.numberOfLines = 2
 		label.translatesAutoresizingMaskIntoConstraints = false
 		return label

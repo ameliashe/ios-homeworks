@@ -20,7 +20,7 @@ class AudioRecViewController: UIViewController {
 	private lazy var recordButton: UIButton = {
 		let button = UIButton(type: .system)
 		button.setImage(UIImage(systemName: "record.circle", withConfiguration: largeConfig), for: .normal)
-		button.tintColor = .black
+		button.tintColor = ColorPalette.customTextColor
 		button.addTarget(self, action: #selector(recordTapped), for: .touchUpInside)
 		button.translatesAutoresizingMaskIntoConstraints = false
 		return button
@@ -29,7 +29,7 @@ class AudioRecViewController: UIViewController {
 	private lazy var playButton: UIButton = {
 		let button = UIButton(type: .system)
 		button.setImage(UIImage(systemName: "play.fill", withConfiguration: largeConfig), for: .normal)
-		button.tintColor = .blue
+		button.tintColor = ColorPalette.customTextColor
 		button.addTarget(self, action: #selector(playTapped), for: .touchUpInside)
 		button.isEnabled = false
 		button.translatesAutoresizingMaskIntoConstraints = false
@@ -41,7 +41,7 @@ class AudioRecViewController: UIViewController {
 	// MARK: Lifecycle
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		view.backgroundColor = .white
+		view.backgroundColor = ColorPalette.customBackground
 
 		recordingSession = AVAudioSession.sharedInstance()
 		addSubviews()
@@ -141,7 +141,7 @@ class AudioRecViewController: UIViewController {
 
 		if recorder.isRecording {
 			recorder.stop()
-			recordButton.tintColor = .black
+			recordButton.tintColor = ColorPalette.customTextColor
 			playButton.isEnabled = true
 		} else {
 			do {

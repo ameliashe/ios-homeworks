@@ -49,9 +49,9 @@ class FeedViewController: UIViewController {
 	private let guessTextField: TextField = {
 		let field = TextField()
 		field.placeholder = NSLocalizedString("Guess...", comment: "Guess textfield placeholder")
-		field.backgroundColor = .white
+		field.backgroundColor = ColorPalette.accentColor
 		field.font = .systemFont(ofSize: 15, weight: .regular)
-		field.textColor = .black
+		field.textColor = ColorPalette.customTextColor
 		field.layer.cornerRadius = 10
 		field.layer.borderWidth = 1
 		field.layer.borderColor = UIColor.black.cgColor
@@ -63,7 +63,7 @@ class FeedViewController: UIViewController {
 
 	private let resultLabel: UILabel = {
 		let label = UILabel()
-		label.textColor = .black
+		label.textColor = ColorPalette.customTextColor
 		label.text = NSLocalizedString("Result", comment: "Guess the word result label")
 		label.font = .systemFont(ofSize: 16, weight: .regular)
 		label.translatesAutoresizingMaskIntoConstraints = false
