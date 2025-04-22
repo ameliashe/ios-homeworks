@@ -277,6 +277,17 @@
         }
       }
     },
+    "Check the latest updates!" : {
+      "comment" : "Notification title",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Посмотрите пропущенные обновления!"
+          }
+        }
+      }
+    },
     "Directions" : {
       "comment" : "Directions alert title",
       "localizations" : {
@@ -549,6 +560,17 @@
         }
       }
     },
+    "No new posts yet..." : {
+      "comment" : "Action alert message",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пока новых постов нет…"
+          }
+        }
+      }
+    },
     "No task" : {
       "comment" : "Default task title",
       "localizations" : {
@@ -562,6 +584,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Нет задач"
+          }
+        }
+      }
+    },
+    "Open this update to see what's new" : {
+      "comment" : "Notification body",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Откройте и узнайте, что нового"
           }
         }
       }
@@ -1093,6 +1126,17 @@
         }
       }
     },
+    "View latest post" : {
+      "comment" : "Notification action",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Последний пост"
+          }
+        }
+      }
+    },
     "Walking" : {
       "comment" : "Walking transport type",
       "localizations" : {
@@ -1157,6 +1201,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Неверный пароль"
+          }
+        }
+      }
+    },
+    "You've clicked the action!" : {
+      "comment" : "Action alert title",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вы нажали на экшн!"
           }
         }
       }
