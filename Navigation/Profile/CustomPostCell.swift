@@ -109,7 +109,7 @@ class CustomPostCell: UITableViewCell {
 	func update(_ model: Post) {
 		authorLabel.text = model.author
 		descriptionLabel.text = model.description
-		attachedImageView.image = UIImage(named: model.image)
+		attachedImageView.image = model.image
 		let textLikes = String(
 			format: NSLocalizedString("%d likes", comment: "Number of likes"),
 			model.likes

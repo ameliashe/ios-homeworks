@@ -131,6 +131,12 @@ class ProfileViewController: UIViewController {
 
 		displayedPostsTableView.delegate = self
 		displayedPostsTableView.dataSource = self
+		if isShowingFavoritePosts == false {
+			displayedPostsTableView.dragDelegate = self
+			displayedPostsTableView.dropDelegate = self
+			displayedPostsTableView.dragInteractionEnabled = true
+		}
+
 	}
 
 	func setupConstraints() {
@@ -452,4 +458,45 @@ extension ProfileViewController: NSFetchedResultsControllerDelegate {
 			displayedPosts = fetchedObjects.map { Post(entity: $0) }
 		}
 	}
+}
+
+
+extension ProfileViewController: UITableViewDropDelegate, UITableViewDragDelegate {
+	func tableView(_ tableView: UITableView, performDropWith coordinator: any UITableViewDropCoordinator) {
+		let destination = coordinator.destinationIndexPath ?? IndexPath(row: displayedPosts.count, section: 1)
+
+		coordinator.session.loadObjects(ofClass: UIImage.self) { images in
+			guard let image = images.first as? UIImage else { return }
+
+			coordinator.session.loadObjects(ofClass: NSString.self) { strings in
+				guard let string = strings.first as? String else { return }
+				let newPost = Post(author: "Drag&Drop", description: string, image: image, likes: 0, views: 0)
+				self.displayedPosts.insert(newPost, at: destination.row)
+				tableView.insertRows(at: [destination], with: .automatic)
+
+			}
+		}
+	}
+	
+	func tableView(_ tableView: UITableView, itemsForBeginning session: any UIDragSession, at indexPath: IndexPath) -> [UIDragItem] {
+		let post = displayedPosts[indexPath.row]
+		let imageProvider = NSItemProvider(object: post.image)
+		let imageItem = UIDragItem(itemProvider: imageProvider)
+
+		let stringProvider = NSItemProvider(object: post.description as NSString)
+		let stringItem = UIDragItem(itemProvider: stringProvider)
+
+		return [imageItem, stringItem]
+	}
+
+	func tableView(_ tableView: UITableView, canHandle session: any UIDropSession) -> Bool {
+		return session.canLoadObjects(ofClass: UIImage.self) && session.canLoadObjects(ofClass: NSString.self)
+	}
+
+	func tableView(_ tableView: UITableView, dropSessionDidUpdate session: any UIDropSession, withDestinationIndexPath destinationIndexPath: IndexPath?) -> UITableViewDropProposal {
+		let operation: UIDropOperation = tableView.hasActiveDrop ? .move : .copy
+		return UITableViewDropProposal(operation: operation)
+	}
+
+
 }

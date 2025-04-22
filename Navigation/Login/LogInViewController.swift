@@ -11,6 +11,7 @@ class LogInViewController: UIViewController {
 
 	//MARK: LoginService
 	private var loginDelegate: LoginViewControllerDelegate? = LoginInspector()
+	private let biometry = LocalAuthorizationService.shared.checkBiometryType()
 
 	//MARK: UI Elements
 	lazy var credentialsStackView: UIStackView = {
@@ -103,12 +104,28 @@ class LogInViewController: UIViewController {
 		return activityIndicatorView
 	}()
 
+	private lazy var biometricButton = CustomImageButton(image: UIImage(systemName: (biometry == "Face ID") ? "faceid" : "touchid")!) { [weak self] in
+		guard let self = self else { return }
+		LocalAuthorizationService.shared.authorizeIfPossible { result, error in
+
+			if result == true {
+				self.logInButtonTapped()
+			} else {
+				let message = error?.localizedDescription
+				self.showErrorAlert(message: message ?? "")
+			}
+		}
+	}
 
 	//MARK: Lifecycle
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		if loginDelegate?.isAuthorized() == true {
 			navigateToProfile()
+		}
+
+		if biometry != "Face ID" || biometry != "Touch ID" {
+			biometricButton.isHidden = false
 		}
 
 		viewSetup()
@@ -138,6 +155,7 @@ class LogInViewController: UIViewController {
 		contentView.addSubview(loginButton)
 		contentView.addSubview(credentialsIndicator)
 		contentView.addSubview(signUpButton)
+		contentView.addSubview(biometricButton)
 
 		scrollView.addSubview(contentView)
 		view.addSubview(scrollView)
@@ -195,7 +213,13 @@ class LogInViewController: UIViewController {
 			signUpButton.topAnchor.constraint(equalTo: loginButton.bottomAnchor, constant: 16),
 			signUpButton.heightAnchor.constraint(equalToConstant: 50),
 
-			signUpButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -20),
+			biometricButton.topAnchor.constraint(equalTo: signUpButton.bottomAnchor, constant: 16),
+			biometricButton.heightAnchor.constraint(equalToConstant: 50),
+			biometricButton.widthAnchor.constraint(equalToConstant: 50),
+			biometricButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+
+			biometricButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -20),
+
 		])
 	}
 
