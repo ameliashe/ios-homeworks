@@ -35,3 +35,33 @@ final class CustomButton: UIButton {
 		buttonAction?()
 	}
 }
+
+
+final class CustomImageButton: UIButton {
+
+	private var buttonAction: (() -> Void)?
+
+	init(image: UIImage, action: @escaping () -> Void) {
+		super.init(frame: .zero)
+		self.buttonAction = action
+		setupButton(image: image)
+		addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
+	}
+
+	required init?(coder: NSCoder) {
+			super.init(coder: coder)
+		}
+
+	private func setupButton(image: UIImage) {
+		self.setImage(image, for: .normal)
+		self.tintColor = .white
+		self.setBackgroundImage(UIImage(named: "blue_pixel"), for: .normal)
+		self.layer.masksToBounds = true
+		self.layer.cornerRadius = 10
+		self.translatesAutoresizingMaskIntoConstraints = false
+	}
+
+	@objc private func buttonTapped() {
+		buttonAction?()
+	}
+}
