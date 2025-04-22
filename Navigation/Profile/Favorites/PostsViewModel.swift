@@ -7,6 +7,7 @@
 
 import Foundation
 import CoreData
+import UIKit
 
 final class PostsViewModel {
 
@@ -43,7 +44,7 @@ final class PostsViewModel {
 			let postEntity = FavoritePost(context: backgroundContext)
 			postEntity.author = post.author
 			postEntity.postDescription = post.description
-			postEntity.image = post.image
+			postEntity.image = post.image.accessibilityIdentifier
 			postEntity.likes = Int64(post.likes)
 			postEntity.views = Int64(post.views)
 
@@ -95,7 +96,7 @@ extension Post {
 	init(entity: FavoritePost) {
 		self.author = entity.author ?? ""
 		self.description = entity.postDescription ?? ""
-		self.image = entity.image ?? ""
+		self.image = UIImage(named: entity.image ?? "")
 		self.likes = Int(entity.likes)
 		self.views = Int(entity.views)
 	}
